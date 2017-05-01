@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tracked Content</title>
+  <link href="https://fonts.googleapis.com/css?family=Oswald|Josefin+Slab" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <style type="text/css">
+    .content {
+      align-items: center;
+      flex-direction: column;
+    }
+    .status {
+    width: 300px;
+    height: 40px;
+    border: solid black 10px;
+    border-top: none;
+    text-align: center;
+    font-family: "Oswald";
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    }
+
+    .top {
+      border: solid black 10px;
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+<div class="content">
+  <div class="status top"> <span>User: <span id="name">Eric</span> </span> </div>
+  <div class="pagenobox">
+    <div class="pageno">
+      Objective <span id="num">3</span>
+    </div>
+  </div>
+  <div class="status"> <span>Status: <span id="status">Complete</span></span> </div>
+  <div class="status"> <span>ID: <span id="id">track1</span></span> </div>
+  <div class="status"> <span>Score: <span id="score">unscored</span></span> </div>
+</div>
+
+<script type="text/javascript">
+  initSCO();
+  let objs = ['track1', 'track2', 'track3', 'track4', 'track5', 'track6', 'track7', 'track8', 'track9', 'track10', ]
+  initalizeObjectives(obs);
+
+  let objectiveNumber = 0;
+
+  function getObjectiveNumber() {
+    objectiveNumber = petParam('objective');
+  }
+
+  getObjectiveNumber();
+
+  function updateStudentValues() {
+    document.getElementById('name').innerText = formateName();
+    document.getElementById('status').innerText = getValue(`cmi.objectives.${objectiveNumber}.status`);
+    document.getElementById('id').innerText = getValue(`cmi.objectives.${objectiveNumber}.id`);
+    document.getElementById('score').innerText = getValue(`cmi.objectives.${objectiveNumber}.score.raw`);
+  }
+
+  function formatName() {
+    let name = getValue(`cmi.core.student_name`);
+    name = name.split(',');
+    return name[1] + ' ' + name[0];
+  }
+
+  updateStudentValues();
+
+  function arrive() {
+    setBookmark(objectiveNumber);
+    setObjectiveStatus(objectiveNumber, STATUS.BROWSED)
+  }
+
+  arrive();
+
+  function leave() {
+    setObjectiveStatus(objectiveNumber, STATUS.COMPLETED);
+  }
+
+  function getParam(param) {
+    let params = new URLSearchParams(window.location.search);
+    for (p of params) {
+      if (p[0] === param){
+        return parseInt(p[1]);
+      }
+    }
+  }
+
+</script>
+
+</body>
+</html>
+

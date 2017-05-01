@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Page 1</title>
+  <link href="https://fonts.googleapis.com/css?family=Oswald|Josefin+Slab|Inconsolata" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css">
+</head>
+
+<body>
+<div class="content">
+  <div id="getlog" class="log">
+    <h2>Get Log</h2>
+    <ul id="getlist">
+    </ul>
+  </div>
+  <div class="pagenobox"><span class="pageno">This is Page 1</span></div>
+  <div id="setlog" class="log">
+    <h2>Set Log</h2>
+    <ul id="setlist">
+    </ul>
+  </div>
+  <div class="debugbox">
+    <div id="get" class="debug">
+      <input type="text" name="">
+      <div class="debug-btn" id="get-btn"> get </div>
+    </div>
+    <div id="set" class="debug">
+      <input type="text" name="">
+      <div class="debug-btn" id="set-btn"> set </div>
+    </div>
+  </div>
+  <!--<div class="pagenobuttons">
+    <a href="Page_1.html" id="prev" class="nav_btn"> Previous </a>
+    <a href="Page_2.html" id="next" class="nav_btn"> Next </a>
+  </div> -->
+</div>
+
+<script type="text/javascript" src="../SCORM_API_wrapper.js"></script>
+<script type="text/javascript">
+  // let p = document.getElementById('prev');
+  // let n = document.getElementById('next');
+
+  // p.addEventListener('click', prev);
+  // n.addEventListener('click', next);
+
+  function prev(e) {
+    e.preventDefault();
+    console.log('previous button clicked');
+    // window.location = this.href;
+  }
+
+  function next(e) {
+    e.preventDefault();
+    console.log('next button clicked');
+    window.location = this.href;
+  }
+
+let scorm = pipwerks.SCORM;
+let lmsConnected = false;
+
+function setBookmark(mark) {
+  if(lmsConnected){
+    var setlessonLocation = scorm.set("cmi.core.lesson_location", mark);
+    scorm.save();
+    scorm.set(`cmi.objectives.${mark}.status`, "completed");
+    console.log(`completing status ${mark}`);
+  }
+}
+
+
+let getBtn = document.getElementById('get-btn');
+let setBtn = document.getElementById('set-btn');
+let getLog = document.getElementById('getlist');
+let setLog = document.getElementById('setlist');
+
+function logGet() {
+  if (lmsConnected) {
+    let val = this.previousElementSibling.value;
+    let item = document.createElement('li');
+    item.classList.add('input');
+    item.innerText = '> ' + val;
+    getLog.append(item);
+    let result = scorm.get(val);
+    let r = document.createElement('li');
+    r.innerText = result;
+    getLog.append(r);
+  } else {
+     let item = document.createElement('li');
+     item.innerText = 'LMS NOT CONNECTED';
+     item.classList.add('error');
+     getLog.append(item);
+  }
+}
+
+function logSet() {
+  if (lmsConnected) {
+    let input = this.previousElementSibling.value;
+    let param = input.split('|')[0];
+    let val = input.split('|')[1];
+    let item = document.createElement('li');
+    item.innerText = `> ${param}:  ${val}`;
+    item.classList.add('input');
+    setLog.append(item);
+    let result = scorm.set(param, val);
+    let r = document.createElement('li');
+    r.innerText = result;
+    setLog.append(r);
+  } else {
+      let item = document.createElement('li');
+     item.innerText = 'LMS NOT CONNECTED';
+     item.classList.add('error');
+     setLog.append(item);
+  }
+}
+
+getBtn.addEventListener('click', logGet);
+setBtn.addEventListener('click', logSet);
+
+function open() {
+   lmsConnected = scorm.init();
+}
+
+function close() {
+  setBookmark(0);
+  scorm.set('cmi.core.lesson_status', 'completed')
+  scorm.quit();
+}
+
+window.addEventListener('load', open);
+window.addEventListener('unload', close);
+window.addEventListener('beforeunload', close);
+
+</script>
+</body>
+</html>

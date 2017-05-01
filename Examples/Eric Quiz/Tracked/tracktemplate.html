@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tracked Content</title>
+  <link href="https://fonts.googleapis.com/css?family=Oswald|Josefin+Slab" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <style type="text/css">
+    .content {
+      align-items: center;
+      flex-direction: column;
+    }
+    .status {
+    width: 300px;
+    height: 40px;
+    border: solid black 10px;
+    border-top: none;
+    text-align: center;
+    font-family: "Oswald";
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    }
+
+    #completionContainer{
+      width: 300px;
+      /*display: flex;*/
+      /*flex-wrap: wrap;*/
+      /*justify-content: space-around;*/
+      border: solid black 5px;
+      /*border-top: none;*/
+      background: black;
+    }
+
+    .objective {
+      /*flex: 1 1 calc(20% - 30px);*/
+      display: flex;
+      border: solid black 5px;
+      border-top: none;
+      justify-content: center;
+      background: white;
+      padding: 6px;
+      font-family: 'Oswald'
+      /*margin: 5px;*/
+    }
+
+    .objective:first-of-type {
+      border-top:solid black 5px;
+    }
+
+    .complete {
+      background: green;
+    }
+
+    .current {
+      background: yellow !important;
+    }
+
+    .incomplete {
+      background: red;
+    }
+
+  </style>
+</head>
+<body>
+<div class="content">
+  <div class="pagenobox">
+    <div class="pageno">
+      Objective <span id="num">[Unset Value]</span>
+    </div>
+  </div>
+  <div class="status"> <span>Status: <span id="status">[Unset Value]</span></span> </div>
+  <div class="status"> <span>ID: <span id="id">[Unset Value]</span></span> </div>
+  <div class="status"> <span>Score: <span id="score">[Unset Value]</span></span> </div>
+  <div id="completionContainer">
+    <div class="objective">Objectives Completed</div>
+  </div>
+</div>
+
+<script type="text/javascript" src="../SCORM_API_wrapper.js"></script>
+<script type="text/javascript" src="../mlscorm.js"></script>
+
+<script type="text/javascript">
+
+// initSCO();
+
+  // utility functio that pulls prameters out of url
+  function getParam(param) {
+    DEBUG.LOG('Getting url');
+    DEBUG.INFO(`url: ${window.location.search}`);
+    let params = new URLSearchParams(window.location.search);
+    DEBUG.INFO(`searching for: ${param} in params: ${params}`);
+    for (p of params) {
+      if (p[0] === param){
+        return parseInt(p[1]);
+      }
+    }
+  }
+
+
+  currentObjective = getParam('objective');
+
+  function updateStudentValues() {
+    DEBUG.LOG("Updating values");
+    document.getElementById('num').innerText = currentObjective;
+    document.getElementById('status').innerText = parent.getValue(`cmi.objectives.${currentObjective}.status`);
+    document.getElementById('id').innerText = parent.getValue(`cmi.objectives.${currentObjective}.id`);
+    document.getElementById('score').innerText = parent.getValue(`cmi.objectives.${currentObjective}.score.raw`) || 'unscored';
+  }
+  function createObjectiveBoxes() {
+    // objectiveCount = parent.getValue('cmi.objectives._count');
+    let objectiveCount = 10;
+    let container = document.getElementById('completionContainer');
+
+    for (i=0; i<objectiveCount; i++) {
+      let box = document.createElement('div');
+      let text = document.createElement('span');
+      text.textContent = i;
+      box.classList.add('objective');
+      let status = parent.getValue(`cmi.objectives.${i}.status`);
+      status === STATUS.COMPLETED ? box.classList.add('complete') : box.classList.add('incomplete');
+
+      if (i === currentObjective) {
+        box.classList.add('current');
+      }
+
+      box.append(text);
+      container.append(box);
+    }
+
+  }
+
+
+  window.addEventListener('load', createObjectiveBoxes);
+  window.addEventListener('load', updateStudentValues);
+
+</script>
+
+</body>
+</html>
+

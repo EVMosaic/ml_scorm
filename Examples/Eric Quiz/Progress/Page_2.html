@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Page 2</title>
+  <link href="https://fonts.googleapis.com/css?family=Oswald|Josefin+Slab" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css">
+</head>
+<body>
+<div class="content">
+  <div class="pagenobox"><span class="pageno">This is Page 2</span></div>
+  <div class="pagenobuttons">
+
+    <a href="Page_1.html" id="prev" class="nav_btn"> Previous </a>
+    <a href="Page_3.html" id="next" class="nav_btn"> Next </a>
+  </div>
+</div>
+
+<script type="text/javascript" src="../SCORM_API_wrapper.js"></script>
+<script type="text/javascript">
+
+  let scorm = pipwerks.SCORM;
+  let lmsConnected = false;
+
+  let p = document.getElementById('prev');
+  let n = document.getElementById('next');
+
+  p.addEventListener('click', prev);
+  n.addEventListener('click', next);
+
+  function prev(e) {
+    e.preventDefault();
+    console.log('previous button clicked');
+    window.location = this.href;
+  }
+
+  function next(e) {
+    e.preventDefault();
+    console.log('next button clicked');
+    window.location = this.href;
+  }
+
+
+function setBookmark(mark) {
+  if(lmsConnected){
+    var setlessonLocation = scorm.set("cmi.core.lesson_location", mark);
+    scorm.save();
+    scorm.set(`cmi.objectives.${mark}.status`, "completed");
+    console.log(`completing status ${mark}`);
+  }
+}
+
+
+function open() {
+   lmsConnected = scorm.init();
+}
+
+function close() {
+  setBookmark(0);
+  scorm.set('cmi.core.lesson_status', 'completed')
+  scorm.quit();
+}
+
+
+window.addEventListener('load', open);
+window.addEventListener('unload', close);
+window.addEventListener('beforeunload', close);
+
+</script>
+</body>
+</html>

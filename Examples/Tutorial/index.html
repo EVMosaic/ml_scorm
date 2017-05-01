@@ -1,0 +1,144 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Certification form</title>
+<style type="text/css">
+<!--
+*{
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: #333333;
+  padding: 2em;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small;
+  text-align: center;
+}
+
+form {
+  background: #F8F8F8;
+  width: 500px;
+  padding: 2em;
+  margin-right: auto;
+  margin-left: auto;
+  border-top: 1px solid #FFFFFF;
+  border-right: 1px solid #FFFFFF;
+  border-bottom: 1px solid #CCCCCC;
+  border-left: 1px solid #CCCCCC;
+}
+
+fieldset {
+  margin-bottom: 10px;
+  border: 1px solid #DDD;
+  padding-right: 1em;
+  padding-left: 1em;
+}
+
+legend {
+  font-weight: bold;
+  margin: 0px;
+  padding: 3px 6px;
+  border: 1px solid #DDDDDD;
+  background: #EFEFEF;
+}
+
+p {
+  padding: 2em;
+}
+
+input  {
+  padding: 10px 5px;
+  font-weight: bold;
+  color: #339900;
+}
+
+-->
+</style>
+</head>
+
+<body>
+<form id="myform" name="myform" method="post" action="">
+  <fieldset>
+  <legend>Please indicate your choice</legend>
+      <p> I, <span id="learnername">[name here]</span>, certify that I have read the materials presented to me.</p>
+      <p><input type="submit" name="submit" id="submit" value="Yes, I agree"  /></p>
+  </fieldset>
+  </form>
+
+  <script type="text/javascript" src="SCORM_API_wrapper.js"></script>
+
+  <script type="text/javascript">
+  let scorm = pipwerks.scorm;
+  let lmsConnected = false;
+
+  function initForm() {
+    document.getElementById('myform').addEventListener('submit', function (e) {
+      e.preventDefault();
+      this.innerHTML = "Thank you, your selection has been recorded. You may close this window.";
+      setComplete();
+      return false;
+    });
+  }
+
+  function handleError(msg){
+    alert(msg);
+    location.reload();
+  }
+
+  function initCourse() {
+    //scorm.init returns a boolean
+    lmsConnected = scorm.init();
+    //If the scorm.init function succeeded...
+    if (lmsConnected) {
+      //Let's get the completion status to see if the course has already been completed
+      let completionstatus = scorm.get("cmi.core.lesson_status");
+      //If the course has already been completed...
+      if (completionstatus == "completed" || completionstatus == "passed") {
+      //...let's display a message and close the browser window
+        handleError("You have already completed this course. You do not need to continue.");
+      }
+
+      //Now let's get the username from the LMS
+      let learnername = scorm.get("cmi.core.student_name");
+      //If the name was successfully retrieved...
+      if (learnername) {
+        //...let's display the username in a page element named "learnername"
+        docment.getElementById("learnername").innerHTML = learnername;
+        //use the name in the form
+      }
+    } else {
+       //... let's alert the user then close the window.
+      handleError("Error: course could not connect with the LMS");
+    }
+  }
+
+  function setComplete() {
+       //If the lmsConnection is active...
+       if (lmsConnected) {
+      //... try setting the course status to "completed"
+      let success = scorm.set("cmi.core.lesson_status", "completed");
+      //If the course was successfully set to "completed"...
+      if (success) {
+         //... disconnect from the LMS, we don't need to do anything else.
+         scorm.quit();
+      //If the course couldn't be set to completed for some reason...
+    } else {
+         //alert the user and close the course window
+         handleError("Error: Course could not be set to complete!");
+       }
+   //If the course isn't connected to the LMS for some reason...
+ } else {
+      //alert the user and close the course window
+      handleError("Error: Course is not connected to the LMS");
+    }
+  }
+
+  initCourse();
+  initForm();
+
+  </script>
+</body>
+</html>

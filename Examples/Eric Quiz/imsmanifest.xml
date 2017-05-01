@@ -1,0 +1,157 @@
+<?xml version="1.0" standalone="no" ?>
+
+<manifest identifier="com.mosaiclearning.eric.test" version="1"
+       xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+       xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                           http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd
+                           http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+
+  <organizations default="eric_test">
+    <organization identifier="eric_test">
+      <title>Eric Makes A Scorm Package</title>
+
+      <item identifier="tracked_items">
+        <title>Tracked Content</title>
+        <item identifier="t0_item" identifierref="t1_resource" parameters="?objective=0">
+          <title>Tracked 0</title>
+        </item>
+        <item identifier="t1_item" identifierref="t1_resource" parameters="?objective=1">
+          <title>Tracked 1</title>
+        </item>
+        <item identifier="t2_item" identifierref="t1_resource" parameters="?objective=2">
+          <title>Tracked 2</title>
+        </item>
+        <item identifier="t3_item" identifierref="t1_resource" parameters="?objective=3">
+          <title>Tracked 3</title>
+        </item>
+        <item identifier="t4_item" identifierref="t1_resource" parameters="?objective=4">
+          <title>Tracked 4</title>
+        </item>
+        <item identifier="t5_item" identifierref="t1_resource" parameters="?objective=5">
+          <title>Tracked 5</title>
+        </item>
+        <item identifier="t6_item" identifierref="t1_resource" parameters="?objective=6">
+          <title>Tracked 6</title>
+        </item>
+        <item identifier="t7_item" identifierref="t1_resource" parameters="?objective=7">
+          <title>Tracked 7</title>
+        </item>
+        <item identifier="t8_item" identifierref="t1_resource" parameters="?objective=8">
+          <title>Tracked 8</title>
+        </item>
+        <item identifier="t9_item" identifierref="t1_resource" parameters="?objective=9">
+          <title>Tracked 9</title>
+        </item>
+
+      </item>
+
+      <item identifier="quiz_item">
+        <title>Mosaic Learning</title>
+        <item identifier="eric_quiz_item" identifierref="eric_quiz_resource">
+          <title>Scormy Scorm Scorm</title>
+        </item>
+      </item>
+
+      <item identifier="sequence_item">
+        <title>Sequenced Content</title>
+        <item identifier="p1_item" identifierref="p1_resource">
+          <title>Page 1</title>
+        </item>
+        <item identifier="p2_item" identifierref="p2_resource">
+          <title>Page 2</title>
+        </item>
+        <item identifier="p3_item" identifierref="p3_resource">
+          <title>Page 3</title>
+        </item>
+      </item>
+
+      <item identifier="generated_item">
+        <title>Generated Content</title>
+        <item identifier="g1_item" identifierref="g1_resource" parameters="?test=1">
+          <title>Page 1</title>
+        </item>
+        <item identifier="g2_item" identifierref="g1_resource" parameters="?test=2">
+          <title>Page 2</title>
+        </item>
+        <item identifier="g3_item" identifierref="g1_resource" parameters="?test=3">
+          <title>Page 3</title>
+        </item>
+        <item identifier="g4_item" identifierref="g1_resource" parameters="?test=4">
+          <title>Page 4</title>
+        </item>
+        <item identifier="g5_item" identifierref="g1_resource" parameters="?test=5">
+          <title>Page 5</title>
+        </item>
+        <item identifier="g6_item" identifierref="g1_resource" parameters="?test=6">
+          <title>Page 6</title>
+        </item>
+        <item identifier="g7_item" identifierref="g1_resource" parameters="?test=7">
+          <title>Page 7</title>
+        </item>
+        <item identifier="g8_item" identifierref="g1_resource" parameters="?test=8">
+          <title>Page 8</title>
+        </item>
+        <item identifier="g9_item" identifierref="g1_resource" parameters="?test=9">
+          <title>Page 9</title>
+        </item>
+        <item identifier="g10_item" identifierref="g1_resource" parameters="?test=10">
+          <title>Page 10</title>
+        </item>
+      </item>
+
+
+    </organization>
+  </organizations>
+
+  <resources>
+    <!-- Note that with the addition of run-time calls, we changed the scormtype to SCO.-->
+    <resource identifier="eric_quiz_resource" type="webcontent" adlcp:scormtype="sco" href="questions.html">
+      <file href="questions.html"/>
+      <dependency identifierref="common_files" />
+    </resource>
+    <resource identifier="p1_resource" type="webcontent" adlcp:scormtype="sco" href="Progress/Page_1.html">
+      <file href="Progress/Page_1.html"/>
+      <dependency identifierref="common_files" />
+    </resource>
+    <resource identifier="p2_resource" type="webcontent" adlcp:scormtype="sco" href="Progress/Page_2.html">
+      <file href="Progress/Page_2.html"/>
+      <dependency identifierref="common_files" />
+    </resource>
+    <resource identifier="p3_resource" type="webcontent" adlcp:scormtype="sco" href="Progress/Page_3.html">
+      <file href="Progress/Page_3.html"/>
+      <dependency identifierref="common_files" />
+    </resource>
+
+    <resource identifier="g1_resource" type="webcontent" adlcp:scormtype="sco" href="Generated/Template.html">
+      <file href="Generated/Template.html" />
+      <dependency identifierref="common_files" />
+    </resource>
+
+    <resource identifier="t1_resource" type="webcontent" adlcp:scormtype="sco" href="Tracked/trackintro.html">
+      <file href="Tracked/trackintro.html" />
+      <dependency identifierref="common_files" />
+      <dependency identifierref="tracked_files" />
+    </resource>
+
+
+    <!--The shared files remain as an asset-->
+    <resource identifier="common_files" type="webcontent" adlcp:scormtype="asset">
+      <file href="SCORM_API_wrapper.js"/>
+      <file href="LMS_Interop.js"/>
+      <file href="ML_SCORM.js"/>
+    </resource>
+
+    <resource identifier="tracked_files" type="webcontent" adlcp:scormtype="asset">
+      <file href="Tracked/tracktemplate.html"/>
+    </resource>
+
+
+  </resources>
+</manifest>

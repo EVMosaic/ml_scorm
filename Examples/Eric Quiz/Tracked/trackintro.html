@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tracked Content</title>
+  <link href="https://fonts.googleapis.com/css?family=Oswald|Josefin+Slab" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <style type="text/css">
+    .content {
+      align-items: center;
+      flex-direction: column;
+    }
+    .status {
+    width: 300px;
+    height: 40px;
+    border: solid black 10px;
+    border-top: none;
+    text-align: center;
+    font-family: "Oswald";
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    }
+
+    .topname {
+      border: solid black 10px;
+      border-bottom: none;
+      background: white;
+      margin-top: 20px;
+      align-self: center;
+    }
+
+    .nestedframe {
+      display: flex;
+      /*flex-direction: column;*/
+      /*background: crimson;*/
+      justify-content: center;
+      align-items: center;
+    }
+
+    .nestedcontent {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .btn {
+      height: 50px;
+      width: 50px;
+      background: white;
+      border: solid black 10px;
+      font-family: "Oswald";
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      color: white;
+      background: black;
+      /*border-color: white;*/
+    }
+
+    .btn:active {
+      color: white;
+      background: crimson;
+      border-color: white;
+    }
+
+    #minus {
+
+      border-right: none;
+    }
+
+    #plus {
+      border-left: none;
+    }
+
+    .nudge {
+      margin-top: -14px;
+    }
+
+    iframe {
+      width: 85%;
+      height: 80vh;
+      background: white;
+      border: solid black 10px;
+      margin-bottom: 10vh;
+    }
+
+    body {
+      background: crimson;
+    }
+  </style>
+</head>
+<body>
+<div class="nestedcontent">
+  <div class="status topname"> <span>User: <span id="name">Eric</span> </span> </div>
+  <div class='nestedframe'>
+    <div class="btn" id="minus"> <span class="nudge">-</span> </div>
+    <iframe src="../Tracked/tracktemplate.html?objective=0"></iframe>
+    <div class="btn" id="plus"> <span>+</span> </div>
+  </div>
+  </div>
+</div>
+
+
+<script type="text/javascript" src="../SCORM_API_wrapper.js"></script>
+<script type="text/javascript" src="../mlscorm.js"></script>
+<script type="text/javascript">
+    // initSCO();
+  let objs = ['track0','track1', 'track2', 'track3', 'track4', 'track5', 'track6', 'track7', 'track8', 'track9' ]
+  let innerFrame = document.getElementsByTagName('iframe')[0];
+  let currentObjective = 0;
+  let nextBtn = document.getElementById('plus');
+  let prevBtn = document.getElementById('minus');
+
+  function updateStudentName() {
+    document.getElementById('name').innerText = formatName();
+  }
+
+  // utility function to display student name
+  function formatName() {
+    let name = getValue(`cmi.core.student_name`);
+    name = name.split(',');
+    return name[1] + ' ' + name[0];
+  }
+
+  // Call at the begining of a sco. needs to be implemented on every sco.
+  // only required to call initSCO() the rest is customization.
+  function init() {
+    initSCO();
+    updateStudentName();
+    currentObjective = parseInt(getBookmark()) || 0;
+
+    DEBUG.LOG("initializing objectives");
+    initializeObjectives(objs);
+    DEBUG.LOG(`${getValue("cmi.objectives._count")} objectives being tracked`);
+
+    if (currentObjective) {
+      DEBUG.LOG('Bookmark found. Returning to last viewed objective');
+      gotoObjective(currentObjective);
+    } else {
+      DEBUG.LOG('No Bookmark found. Starting from first slide');
+    }
+
+
+  }
+
+  // Impelement at end of sco. Only required to call scorm.quit()/ closeSCO()
+  function close() {
+    leave();
+    scorm.quit();
+  }
+
+  // sets page to next objective
+  function next() {
+    DEBUG.LOG(`objective is ${currentObjective} going to next objective`);
+    if (currentObjective < objs.length - 1) {
+      gotoObjective(currentObjective + 1);
+    }
+  }
+
+  // sets page to previous objective
+  function prev() {
+    DEBUG.LOG("objective is ${currentObjective} going to previous objective");
+    if (currentObjective > 0) {
+      gotoObjective(currentObjective - 1);
+    }
+  }
+
+  // sets page to specific objective
+  function gotoObjective(objective) {
+    DEBUG.LOG(`heading to objective ${objective}`);
+    leave();
+    currentObjective = objective;
+    DEBUG.LOG(`setting objective to ${objective}`);
+    innerFrame.src = `../Tracked/tracktemplate.html?objective=${objective}`
+    arrive();
+  }
+
+  // called after objective changes. probably could use a better name.
+  function arrive() {
+    DEBUG.LOG("arriving on new objective");
+    setBookmark(currentObjective);
+    if (getObjectiveStatus(currentObjective) === STATUS.COMPLETED) {
+      return;
+    } else {
+      setObjectiveStatus(currentObjective, STATUS.BROWSED);
+    }
+  }
+
+  // called before objective changes
+  function leave() {
+    DEBUG.LOG("leaving current objective");
+    setObjectiveStatus(currentObjective, STATUS.COMPLETED);
+    checkCompletion();
+  }
+
+  function checkCompletion() {
+    let totalObjectives = parseInt(getValue('cmi.objectives._count'));
+    let passedObjectives = 0;
+    DEBUG.INFO(totalObjectives + ' objectives total');
+    for (i=0; i<totalObjectives; i++) {
+      passedObjectives += (getValue(`cmi.objectives.${i}.status`) === STATUS.COMPLETED? 1 : 0);
+      DEBUG.INFO('completed objectives now at ' + passedObjectives);
+    }
+    if (passedObjectives === totalObjectives) {
+      setValue('cmi.core.lesson_status', 'completed');
+    }
+  }
+
+  window.addEventListener('load', init);
+  window.addEventListener('unload', close);
+  window.addEventListener('beforeunload', close);
+  nextBtn.addEventListener('click', next);
+  prevBtn.addEventListener('click', prev);
+
+</script>
+
+</body>
+</html>
+

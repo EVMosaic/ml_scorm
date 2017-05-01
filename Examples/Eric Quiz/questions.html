@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>question templates</title>
+  <link href="https://fonts.googleapis.com/css?family=Oswald|Josefin+Slab" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<div class="multi-question">
+  <h2> What is the first letter of the alphabet? </h2>
+  <form class="multi" action="">
+
+    <div class="multi-answer">
+      <input type="radio" name="question-1" value="A" id="r1">
+      <label for="r1" data-letter="A">The Letter A</label>
+    </div>
+    <div class="multi-answer">
+      <input type="radio" name="question-1" value="B" id="r2">
+      <label for="r2" data-letter="B">The Letter B</label>
+    </div>
+    <div class="multi-answer">
+      <input type="radio" name="question-1" value="C" id="r3">
+      <label for="r3" data-letter="C">The Letter C</label>
+    </div>
+    <div class="multi-answer">
+      <input type="radio" name="question-1" value="D" id="r4">
+      <label for="r4" data-letter="D">The Letter D</label>
+    </div>
+
+    <input type="submit" class="submit" id="submit-quiz">
+  </form>
+</div>
+
+
+
+<script type="text/javascript" src="SCORM_API_wrapper.js" /></script>
+<script type="text/javascript" src="LMS_Interop.js"></script>
+
+<script type="text/javascript">
+  initCourse();
+
+  document.getElementById('submit-quiz').addEventListener('click', checkAnswers);
+
+  function checkAnswers(e) {
+    e.preventDefault();
+    //get user answer
+    student_answer = document.querySelector('input[name="question-1"]:checked').value;
+    //check user answer against correct answer
+    console.log("checking answers");
+    correct_answer = "A";
+    //record user answer
+    //record score
+    console.log("setting id"); //failed
+    pipwerks.SCORM.set("cmi.interactions.0.id", 0);
+    console.log("setting text"); //failed
+    pipwerks.SCORM.set("cmi.interactions.0.text","What is the first letter of the alphabet?");
+    console.log("setting type"); //failed
+    pipwerks.SCORM.set("cmi.interactions.0.type", "choice");
+    console.log("setting student answer");
+    pipwerks.SCORM.set("cmi.interactions.0.student_response", student_answer);
+    console.log("setting result");
+    pipwerks.SCORM.set("cmi.interactions.0.result", "correct");
+    console.log("setting objective id");
+    pipwerks.SCORM.set("cmi.interactions.0.objectives.0.id", 0);
+    console.log("setting score");
+    pipwerks.SCORM.set("cmi.core.score.raw", 100);
+    console.log("setting score min");
+    pipwerks.SCORM.set("cmi.core.score.min", 0);
+    console.log("setting score max");
+    pipwerks.SCORM.set("cmi.core.score.max", 100);
+    console.log("setting lesson status");
+    pipwerks.SCORM.set("cmi.core.lesson_status", "passed");
+    console.log("setting location");
+    pipwerks.SCORM.set("cmi.core.lesson_location", 1);
+
+    // pipwerks.SCORM.data.set(parameter, value); //add parameter and value
+
+  }
+
+</script>
+
+
+</body>
+</html>

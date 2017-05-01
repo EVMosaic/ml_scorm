@@ -1,0 +1,222 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+
+}
+
+ul {
+  list-style-type: none;
+  padding: 0 30px;
+}
+
+li {
+  font-family: 'Inconsolata', sans-serif;
+  word-wrap: break-word;
+  font-size: 15px;
+}
+
+button {
+  font-family: 'Oswald', serif;
+  margin: 5px;
+  font-weight: bold;
+  width: 30px;
+  height: 30px;
+  background: white;
+  border: solid black 2px;
+  text-align: center;
+  font-size: 15px;
+}
+
+button:hover {
+  color: white;
+  background: black;
+}
+
+.multi-question {
+  border-bottom: solid black 5px;
+}
+
+h2 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: normal;
+  background: black;
+  color: white;
+  padding: 10px;
+  padding-left: 15px;
+}
+
+.multi-answer{
+  /*display: flex;*/
+  margin-left: 40px;
+}
+
+label {
+  cursor: pointer;
+  font-family: 'Oswald', serif;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+label:before {
+  content: attr(data-letter);
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Oswald', serif;
+  margin: 5px;
+  font-weight: bold;
+  width: 26px;
+  height: 26px;
+  background: white;
+  border: solid black 2px;
+  text-align: center;
+  font-size: 15px;
+}
+
+input[type=radio]:checked + label:before {
+    color: white;
+    background: black;
+}
+
+input[type=radio]:active + label:before {
+    background: #444;
+    color: white;
+}
+
+
+
+.submit {
+    background: white;
+    border: black solid 3px;
+    margin: 5px auto;
+    font-family: "Oswald";
+    font-size: 20px;
+    display: block;
+    border-radius: 25px;
+    padding: 5px 50px;
+}
+
+.submit:hover {
+  background: black;
+  color: white;
+  cursor: pointer;
+}
+
+.submit:active {
+  background: #444;
+  color: white;
+}
+
+.content {
+  height: 100vh;
+  display: flex;
+  /*flex-direction: column;*/
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.pagenobox {
+  height: 300px;
+  width: 300px;
+  border: solid black 10px;
+  display: flex;
+  align-items: center;
+}
+
+.pageno {
+  font-family: "Oswald";
+  font-size: 70px;
+  padding: 20px;
+  text-align: center;
+}
+
+.pagenobuttons {
+  display: flex;
+  justify-content: space-around;
+  width: 320px;
+  flex: 1 1 100%;
+}
+
+.nav_btn {
+  background: white;
+  border: black solid 5px;
+  padding: 5px;
+  font-family: "Oswald";
+  font-size: 20px;
+  margin-top: 20px;
+  width: 100px;
+  color: black;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+}
+
+.nav_btn:hover {
+  background: black;
+  color: white;
+}
+
+.nav_btn:active {
+  background: #444;
+  color: white;
+}
+
+
+.debugbox {
+  flex: 1 1 100vw;
+  display: flex;
+  justify-content: center;
+}
+
+.debug-btn {
+  background: black;
+  color: white;
+  font-family: "Oswald";
+  cursor: pointer;
+  height: 30px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: solid 2px black;
+}
+
+.debug-btn:hover {
+  color: black;
+  background: white;
+}
+
+.debug-btn:active {
+  background: red;
+}
+
+.debug {
+  display: flex;
+  margin: 5px;
+}
+
+input[type=text] {
+  font-family: "Oswald";
+  padding: 5px;
+  text-align: center;
+  border: solid 2px black;
+  outline: none;
+}
+
+.log {
+  flex: 1 1 0;
+  align-self: flex-start;
+  margin-top: 22px;
+  width: calc(50% - 310px);
+}
+
+.input {
+  color: blue;
+}
+
+.error {
+  color: red;
+}

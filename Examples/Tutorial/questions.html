@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>question templates</title>
+  <link href="https://fonts.googleapis.com/css?family=Oswald|Josefin+Slab" rel="stylesheet">
+  <style type="text/css">
+    body {
+      font-family: sans-serif;
+    }
+
+    ul {
+      list-style-type: none;
+    }
+
+    li {
+      font-family: 'Oswald', sans-serif;
+    }
+
+    button {
+      font-family: 'Oswald', serif;
+      margin: 5px;
+      font-weight: bold;
+      width: 30px;
+      height: 30px;
+      background: white;
+      border: solid black 2px;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    button:hover {
+      color: white;
+      background: black;
+    }
+
+    .multi-question {
+      border-bottom: solid black 5px;
+    }
+
+    h2 {
+      font-family: 'Oswald', sans-serif;
+      font-weight: normal;
+      background: black;
+      color: white;
+      padding: 10px;
+      padding-left: 15px;
+    }
+
+   .multi-answer{
+      /*display: flex;*/
+      margin-left: 40px;
+   }
+
+    label {
+      cursor: pointer;
+      font-family: 'Oswald', serif;
+    }
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    label:before {
+      content: attr(data-letter);
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Oswald', serif;
+      margin: 5px;
+      font-weight: bold;
+      width: 26px;
+      height: 26px;
+      background: white;
+      border: solid black 2px;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    input[type=radio]:checked + label:before {
+        color: white;
+        background: black;
+    }
+
+    input[type=radio]:active + label:before {
+        background: #444;
+        color: white;
+    }
+
+
+
+    .submit {
+        background: white;
+        border: black solid 3px;
+        margin: 5px auto;
+        font-family: "Oswald";
+        font-size: 20px;
+        display: block;
+        border-radius: 25px;
+        padding: 5px 50px;
+    }
+
+    .submit:hover {
+      background: black;
+      color: white;
+      cursor: pointer;
+    }
+
+    .submit:active {
+      background: #444;
+      color: white;
+    }
+
+
+
+  </style>
+</head>
+<body>
+
+<div class="multi-question">
+  <h2> What is the first letter of the alphabet? </h2>
+  <form class="multi" action="">
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="A" id="r1">
+        <label for="r1" data-letter="A">The Letter A</label>
+      </div>
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="B" id="r2">
+        <label for="r2" data-letter="B">The Letter B</label>
+      </div>
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="C" id="r3">
+        <label for="r3" data-letter="C">The Letter C</label>
+      </div>
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="D" id="r4">
+        <label for="r4" data-letter="D">The Letter D</label>
+      </div>
+  <input type="submit" class="submit">
+  </form>
+</div>
+
+<div class="multi-question">
+  <h2> What is the first letter of the alphabet? </h2>
+  <form class="multi" action="">
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="A" id="r1">
+        <label for="r1" data-letter="A">The Letter A</label>
+      </div>
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="B" id="r2">
+        <label for="r2" data-letter="B">The Letter B</label>
+      </div>
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="C" id="r3">
+        <label for="r3" data-letter="C">The Letter C</label>
+      </div>
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="D" id="r4">
+        <label for="r4" data-letter="D">The Letter D</label>
+      </div>
+  <input type="submit" class="submit">
+  </form>
+</div>
+
+<div class="multi-question">
+  <h2> What is the first letter of the alphabet? </h2>
+  <form class="multi" action="">
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="A" id="r1">
+        <label for="r1" data-letter="A">The Letter A</label>
+      </div>
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="B" id="r2">
+        <label for="r2" data-letter="B">The Letter B</label>
+      </div>
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="C" id="r3">
+        <label for="r3" data-letter="C">The Letter C</label>
+      </div>
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="D" id="r4">
+        <label for="r4" data-letter="D">The Letter D</label>
+      </div>
+  <input type="submit" class="submit">
+  </form>
+</div>
+
+<div class="multi-question">
+  <h2> What is the first letter of the alphabet? </h2>
+  <form class="multi" action="">
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="A" id="r1">
+        <label for="r1" data-letter="A">The Letter A</label>
+      </div>
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="B" id="r2">
+        <label for="r2" data-letter="B">The Letter B</label>
+      </div>
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="C" id="r3">
+        <label for="r3" data-letter="C">The Letter C</label>
+      </div>
+      <div class="multi-answer">
+        <input type="radio" name="question-1" value="D" id="r4">
+        <label for="r4" data-letter="D">The Letter D</label>
+      </div>
+  <input type="submit" class="submit">
+  </form>
+</div>
+
+</body>
+</html>
