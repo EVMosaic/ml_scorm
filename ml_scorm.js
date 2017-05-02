@@ -81,6 +81,7 @@ function initSCO() {
 // Handles LMSFinish
 function closeSCO() {
   scorm.quit();
+  lmsConnected = false;
 }
 
 // Called when a SCO has been completed to mark in LMS as completed
