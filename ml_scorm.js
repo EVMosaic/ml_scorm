@@ -131,40 +131,9 @@ function initializeObjectives(objectives) {
   })
 }
 
-// Adds new objective to the end of the current objective array
-function addObjective(id='') {
-  let nextIndex = scorm.get("cmi.objectives._count");
-  setValue(`cmi.objectives.${nextIndex}.id`, id);
-}
-
-// Updates an objective at index with new status and score
-function updateObjective(index, status, score) {
-  if (status) {
-    setObjectiveStatus(index, status);
-  }
-  if (score) {
-    scoreObjective(index, score);
-  }
-}
-
-// Sets objective at index to complete
-function completeObjective(index) {
-  setValue(`cmi.objectives.${index}.status`, "completed");
-}
-
-// Records score for an objective
-function scoreObjective(index, score) {
-  setValue('cmi.objectives.${index}.score.raw', score);
-}
-
-// Set objective at index to status
-function setObjectiveStatus(index, status) {
-  setValue(`cmi.objectives.${index}.status`, status);
-}
-
-// Gets objective status at index
-function getObjectiveStatus(index) {
-  return getValue(`cmi.objectives.${index}.status`);
+// Retrieves bookmark location from course
+function getBookmark() {
+  return getValue('cmi.core.lesson_location');
 }
 
 // Sets bookmark of location in course
@@ -172,8 +141,84 @@ function setBookmark(location) {
   setValue('cmi.core.lesson_location', location);
 }
 
-// Retrieves bookmark location from course
-function getBookmark() {
-  return getValue('cmi.core.lesson_location');
+
+// Objective Object for keeping track of objectives within a SCORM
+// currently contains id status and score (as a seperate object detailed below)
+// When using the Objective objects index is frozen at creation and cannot be
+// changed. values auto save to the LMS when they are updated.
+class Objective {
+  constructor(index, id="[New Objective]") {
+    Object.defineProperty(this, 'index', {
+      writable: false,
+      configurable: false,
+      value: index
+    });
+    this._id = id;
+    this._status = STATUS.NOT_ATTEMPTED;
+    this._score = new Score();
+  }
+
+  complete() {
+    this._status = STATUS.COMPLETED
+    setValue(`cmi.objectives.${this.index}.status`, this._status);
+  }
+
+  set status(newStatus) {
+    this._status = newStatus;
+    setValue(`cmi.objectives.${this.index}.status`, newStatus);
+  }
+
+  get status() {
+    this._status = getValue(`cmi.objectives.${this.index}.status`);
+    return this._status;
+  }
+
+  set score(rawScore) {
+    this._score.raw = rawScore;
+    setValue(`cmi.objectives.${this.index}.score.raw`, rawScore);
+  }
+
+  // This is a read only property on the LMS so no retrival is done before
+  // returning the value. this is provided to keep track of score outside
+  // of the LMS
+
+  get score() {
+    return this._score.raw;
+  }
+
+  set id(newId) {
+    this._id = newId;
+    setValue(`cmi.objectives.${this.index}.id`, newId);
+  }
+
+  get id() {
+    this._id = getValue(`cmi.objectives.${this.index}.id`);
+    return this._id;
+  }
+  // Changes will be updated to the LMS as they are made to the
+  // object this method is probably redundant, but provides a way
+  // to ensure that all values are saved on the object.
+  save() {
+    scorm.set(`cmi.objectives.${this.index}.id`, newStatus);
+    scorm.set(`cmi.objectives.${this.index}.score`, newStatus);
+    scorm.set(`cmi.objectives.${this.index}.status`, newStatus);
+    scorm.save();
+  }
+}
+// This is a helper object for the Objective class, but will probably be
+// needed in other places as well. No functionality at the moment.
+class Score {
+  constructor (raw=0, min=0, max=100) {
+    this.raw = raw;
+    this.min = min;
+    this.max =  max;
+  }
 }
 
+
+
+// Adds new objective to the end of the current objective array
+function addObjective(id='') {
+  let nextIndex = scorm.get("cmi.objectives._count");
+  setValue(`cmi.objectives.${nextIndex}.id`, id);
+}
