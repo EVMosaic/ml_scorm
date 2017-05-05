@@ -168,7 +168,7 @@ input[type=radio]:active + label:before {
 .debugbox {
   flex: 1 1 100vw;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
 }
 
 .debug-btn {
@@ -196,6 +196,10 @@ input[type=radio]:active + label:before {
 .debug {
   display: flex;
   margin: 5px;
+}
+
+.debug-input {
+  width: 250px;
 }
 
 input[type=text] {

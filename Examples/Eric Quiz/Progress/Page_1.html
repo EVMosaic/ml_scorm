@@ -22,11 +22,11 @@
   </div>
   <div class="debugbox">
     <div id="get" class="debug">
-      <input type="text" name="">
+      <input type="text" name="" class="debug-input">
       <div class="debug-btn" id="get-btn"> get </div>
     </div>
     <div id="set" class="debug">
-      <input type="text" name="">
+      <input type="text" name="" class="debug-input">
       <div class="debug-btn" id="set-btn"> set </div>
     </div>
   </div>
@@ -83,7 +83,7 @@ function logGet() {
     getLog.append(item);
     let result = scorm.get(val);
     let r = document.createElement('li');
-    r.innerText = result;
+    r.innerText = '<' + result;
     getLog.append(r);
   } else {
      let item = document.createElement('li');
@@ -104,7 +104,7 @@ function logSet() {
     setLog.append(item);
     let result = scorm.set(param, val);
     let r = document.createElement('li');
-    r.innerText = result;
+    r.innerText = '<' + result;
     setLog.append(r);
   } else {
       let item = document.createElement('li');
