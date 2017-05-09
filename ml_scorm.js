@@ -12,32 +12,32 @@ let lmsConnected = false;
 
 // Global constant object for legal status types;
 const STATUS = {
-  PASSED : "passed",
-  FAILED : "failed",
-  COMPLETED : "completed",
-  INCOMPLETE : "incomplete",
-  BROWSED : "browsed",
-  NOT_ATTEMPTED : "not attempted"
+  PASSED: "passed",
+  FAILED: "failed",
+  COMPLETED: "completed",
+  INCOMPLETE: "incomplete",
+  BROWSED: "browsed",
+  NOT_ATTEMPTED: "not attempted"
 }
 
 // Global constant object for legal exit conditions;
 const EXIT = {
-  TIMEOUT : "time-out",
-  SUSPENED : "suspend",
-  LOGOUT : "logout",
-  NORMAL : ""
+  TIMEOUT: "time-out",
+  SUSPENED: "suspend",
+  LOGOUT: "logout",
+  NORMAL: ""
 }
 
 // Global constant object for legal interaction types;
 const INTERACTION = {
-  TF : "true-false}",
-  CHOICE : "choice",
-  FILL : "fill-in",
-  MATCH : "matching",
-  PERFORMANCE : "performance",
-  LIKERT : "likert",
-  SEQUENCE : "sequencing",
-  NUMERIC : "numeric"
+  TF: "true-false}",
+  CHOICE: "choice",
+  FILL: "fill-in",
+  MATCH: "matching",
+  PERFORMANCE: "performance",
+  LIKERT: "likert",
+  SEQUENCE: "sequencing",
+  NUMERIC: "numeric"
 }
 
 // Flag to turn debug messages on/off
@@ -46,25 +46,25 @@ const INTERACTION = {
 const DEBUG_ENABLED = true;
 
 const DEBUG = {
-  LOG : function(msg) {
+  LOG: function(msg) {
     if (DEBUG_ENABLED) {
       console.log(msg);
     }
   },
 
-  ERROR : function(msg) {
+  ERROR: function(msg) {
     if (DEBUG_ENABLED) {
       console.error(msg);
     }
   },
 
-  WARN : function(msg) {
+  WARN: function(msg) {
     if (DEBUG_ENABLED) {
       console.warn(msg);
     }
   },
 
-  INFO : function(msg) {
+  INFO: function(msg) {
     if (DEBUG_ENABLED) {
       console.info(msg);
     }
@@ -128,12 +128,13 @@ function setBookmark(location) {
 // This is a helper object for the Objective class, but will probably be
 // needed in other places as well. No functionality at the moment.
 class Score {
-  constructor (raw=0, min=0, max=100) {
+  constructor(raw = 0, min = 0, max = 100) {
     this.raw = raw;
     this.min = min;
-    this.max =  max;
+    this.max = max;
   }
 }
+
 
 // Objective Object for keeping track of objectives within a SCO.
 // Keeps a mirror of the data it sends to the LMS locally so even RO properties
@@ -142,11 +143,10 @@ class Score {
 // Index is frozen at creation and cannot be changed.
 // Values autosave to the LMS when they are updated.
 
-
 class Objective {
   // Creates a new Objective object and adds it to LMS
   // Index is non editable after creation.
-  constructor(index, id="[New Objective]") {
+  constructor(index, id = "[New Objective]") {
     Object.defineProperty(this, 'index', {
       writable: false,
       configurable: false,
@@ -159,11 +159,16 @@ class Objective {
     setValue(`cmi.objectives.${index}.id`, id);
   }
 
-  // Convenience function for completing an objective
-  complete() {
-    this._status = STATUS.COMPLETED
-    setValue(`cmi.objectives.${this.index}.status`, this._status);
-  }
+  // Sets ID of objective. This is a string on the LMS.
+  set id(newId) {
+      this._id = newId;
+      setValue(`cmi.objectives.${this.index}.id`, newId);
+    }
+    // Pulls objective ID from LMS
+  get id() {
+      this._id = getValue(`cmi.objectives.${this.index}.id`);
+      return this._id;
+    }
 
   // Update status with more control than complete()
   // Expects a legal value from STATUS constant
@@ -178,6 +183,12 @@ class Objective {
     return this._status;
   }
 
+  // Convenience function for completing an objective
+  complete() {
+    this._status = STATUS.COMPLETED
+    setValue(`cmi.objectives.${this.index}.status`, this._status);
+  }
+
   // Sets score on LMS. Can be expanded for more complex scoring but
   // Currently takes in a raw score and records it.
   set score(rawScore) {
@@ -185,26 +196,14 @@ class Objective {
     setValue(`cmi.objectives.${this.index}.score.raw`, rawScore);
   }
 
-  // This is a read only property on the LMS so no retrival is done before
-  // returning the value. this is provided to keep track of score outside
-  // of the LMS
+  // Retrieves the raw score from the score object on objective
   get score() {
     return this._score.raw;
   }
 
-  // Sets ID of objective. This is a string on the LMS.
-  set id(newId) {
-    this._id = newId;
-    setValue(`cmi.objectives.${this.index}.id`, newId);
-  }
-  // Pulls objective ID from LMS
-  get id() {
-    this._id = getValue(`cmi.objectives.${this.index}.id`);
-    return this._id;
-  }
-  // Changes will be updated to the LMS as they are made to the
-  // object this method is probably redundant, but provides a way
-  // to ensure that all values are saved on the object.
+    // Changes will be updated to the LMS as they are made to the
+    // object this method is probably redundant, but provides a way
+    // to ensure that all values are saved on the object.
   save() {
     scorm.set(`cmi.objectives.${this.index}.id`, newStatus);
     scorm.set(`cmi.objectives.${this.index}.score`, newStatus);
@@ -233,12 +232,12 @@ class Objectives {
   // the time it is run. Can be expanded at some point to include
   // more involved checking and adding of missing or updated objectives.
   initializeList(listOfIds) {
-    let currentObjectivesCount = parseInt(getValue('cmi.object._count'));
+    let currentObjectivesCount = parseInt(getValue('cmi.objectives._count'));
     if (currentObjectivesCount) {
       DEBUG.log('objectives already initialized');
       return;
     } else {
-      listOfIds.forEach(obj => this.addObjective(obj));
+      listOfIds.forEach(obj => this.addNew(obj));
     }
   }
 }
