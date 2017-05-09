@@ -81,6 +81,7 @@ function initSCO() {
 // Handles LMSFinish
 function closeSCO() {
   scorm.quit();
+  lmsConnected = false;
 }
 
 // Called when a SCO has been completed to mark in LMS as completed
@@ -100,6 +101,8 @@ function setValue(param, value) {
 }
 
 // Convenience wrapper for getting SCROM variables.
+// All values are returned as strings. Remember to parse if you
+// are expecting a number
 function getValue(param) {
   DEBUG.INFO(`retrieving value for ${param}`);
   if (lmsConnected) {
@@ -111,59 +114,10 @@ function getValue(param) {
   }
 }
 
-// Takes in an array of objectives and adds them to the LMS
-// Need to standardize a way of holding these objectives
-// and naming them.
-// Currently takes in array of IDs and uses them to auto
-// generate indexs in order of the array
-function initializeObjectives(objectives) {
-  DEBUG.LOG("Welcome to initializeObjectives()");
-  let totalObjectives = getValue('cmi.objectives._count');
-  DEBUG.LOG(`totalObjectives:${totalObjectives} objectives.length:${objectives.length}`);
-  if (objectives.length <= totalObjectives) {
-    DEBUG.LOG('objectives detected. aborting initialization process');
-    return;
-  }
-  DEBUG.LOG('no objectives found starting initialization');
-  objectives.forEach(obj => {
-    addObjective(obj);
-  })
-}
 
-// Adds new objective to the end of the current objective array
-function addObjective(id='') {
-  let nextIndex = scorm.get("cmi.objectives._count");
-  setValue(`cmi.objectives.${nextIndex}.id`, id);
-}
-
-// Updates an objective at index with new status and score
-function updateObjective(index, status, score) {
-  if (status) {
-    setObjectiveStatus(index, status);
-  }
-  if (score) {
-    scoreObjective(index, score);
-  }
-}
-
-// Sets objective at index to complete
-function completeObjective(index) {
-  setValue(`cmi.objectives.${index}.status`, "completed");
-}
-
-// Records score for an objective
-function scoreObjective(index, score) {
-  setValue('cmi.objectives.${index}.score.raw', score);
-}
-
-// Set objective at index to status
-function setObjectiveStatus(index, status) {
-  setValue(`cmi.objectives.${index}.status`, status);
-}
-
-// Gets objective status at index
-function getObjectiveStatus(index) {
-  return getValue(`cmi.objectives.${index}.status`);
+// Retrieves bookmark location from course
+function getBookmark() {
+  return getValue('cmi.core.lesson_location');
 }
 
 // Sets bookmark of location in course
@@ -171,8 +125,120 @@ function setBookmark(location) {
   setValue('cmi.core.lesson_location', location);
 }
 
-// Retrieves bookmark location from course
-function getBookmark() {
-  return getValue('cmi.core.lesson_location');
+// This is a helper object for the Objective class, but will probably be
+// needed in other places as well. No functionality at the moment.
+class Score {
+  constructor (raw=0, min=0, max=100) {
+    this.raw = raw;
+    this.min = min;
+    this.max =  max;
+  }
 }
 
+// Objective Object for keeping track of objectives within a SCO.
+// Keeps a mirror of the data it sends to the LMS locally so even RO properties
+// can be accesed after storage to the LMS.
+// Currently contains ID, Status and Score (as a seperate object detailed below)
+// Index is frozen at creation and cannot be changed.
+// Values autosave to the LMS when they are updated.
+
+
+class Objective {
+  // Creates a new Objective object and adds it to LMS
+  // Index is non editable after creation.
+  constructor(index, id="[New Objective]") {
+    Object.defineProperty(this, 'index', {
+      writable: false,
+      configurable: false,
+      value: index
+    });
+    this._id = id;
+    this._status = STATUS.NOT_ATTEMPTED;
+    this._score = new Score();
+
+    setValue(`cmi.objectives.${index}.id`, id);
+  }
+
+  // Convenience function for completing an objective
+  complete() {
+    this._status = STATUS.COMPLETED
+    setValue(`cmi.objectives.${this.index}.status`, this._status);
+  }
+
+  // Update status with more control than complete()
+  // Expects a legal value from STATUS constant
+  set status(newStatus) {
+    this._status = newStatus;
+    setValue(`cmi.objectives.${this.index}.status`, newStatus);
+  }
+
+  // Retrieve status of objective from LMS
+  get status() {
+    this._status = getValue(`cmi.objectives.${this.index}.status`);
+    return this._status;
+  }
+
+  // Sets score on LMS. Can be expanded for more complex scoring but
+  // Currently takes in a raw score and records it.
+  set score(rawScore) {
+    this._score.raw = rawScore;
+    setValue(`cmi.objectives.${this.index}.score.raw`, rawScore);
+  }
+
+  // This is a read only property on the LMS so no retrival is done before
+  // returning the value. this is provided to keep track of score outside
+  // of the LMS
+  get score() {
+    return this._score.raw;
+  }
+
+  // Sets ID of objective. This is a string on the LMS.
+  set id(newId) {
+    this._id = newId;
+    setValue(`cmi.objectives.${this.index}.id`, newId);
+  }
+  // Pulls objective ID from LMS
+  get id() {
+    this._id = getValue(`cmi.objectives.${this.index}.id`);
+    return this._id;
+  }
+  // Changes will be updated to the LMS as they are made to the
+  // object this method is probably redundant, but provides a way
+  // to ensure that all values are saved on the object.
+  save() {
+    scorm.set(`cmi.objectives.${this.index}.id`, newStatus);
+    scorm.set(`cmi.objectives.${this.index}.score`, newStatus);
+    scorm.set(`cmi.objectives.${this.index}.status`, newStatus);
+    scorm.save();
+  }
+}
+
+// Container class to hold all objectives for a SCO.
+// Contains methods for adding new objectives one at a time or in bulk
+class Objectives {
+  constructor() {
+    this.objectives = [];
+    console.log('constructing');
+  }
+
+  // Adds new objective to both the internal tracking and on the LMS
+  addNew(objectiveId) {
+    let newObjective = new Objective(this.objectives.length, objectiveId);
+    this.objectives.push(newObjective);
+  }
+
+  // Convienence function to add a list of objectives all at once
+  // Takes in a list of IDs and creates a new objective for each
+  // Will only add list if LMS does not contain any objectives at
+  // the time it is run. Can be expanded at some point to include
+  // more involved checking and adding of missing or updated objectives.
+  initializeList(listOfIds) {
+    let currentObjectivesCount = parseInt(getValue('cmi.object._count'));
+    if (currentObjectivesCount) {
+      DEBUG.log('objectives already initialized');
+      return;
+    } else {
+      listOfIds.forEach(obj => this.addObjective(obj));
+    }
+  }
+}

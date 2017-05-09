@@ -37,6 +37,7 @@
 </div>
 
 <script type="text/javascript" src="../SCORM_API_wrapper.js"></script>
+<script type="text/javascript" src="../ml_scorm.js"></script>
 <script type="text/javascript">
   // let p = document.getElementById('prev');
   // let n = document.getElementById('next');
@@ -55,19 +56,6 @@
     console.log('next button clicked');
     window.location = this.href;
   }
-
-let scorm = pipwerks.SCORM;
-let lmsConnected = false;
-
-function setBookmark(mark) {
-  if(lmsConnected){
-    var setlessonLocation = scorm.set("cmi.core.lesson_location", mark);
-    scorm.save();
-    scorm.set(`cmi.objectives.${mark}.status`, "completed");
-    console.log(`completing status ${mark}`);
-  }
-}
-
 
 let getBtn = document.getElementById('get-btn');
 let setBtn = document.getElementById('set-btn');

@@ -61,6 +61,9 @@
 
       <item identifier="sequence_item">
         <title>Sequenced Content</title>
+        <item identifier="p0_item" identifierref="p0_resource">
+          <title>ml_scorm playground</title>
+        </item>
         <item identifier="p1_item" identifierref="p1_resource">
           <title>Page 1</title>
         </item>
@@ -114,6 +117,10 @@
     <!-- Note that with the addition of run-time calls, we changed the scormtype to SCO.-->
     <resource identifier="eric_quiz_resource" type="webcontent" adlcp:scormtype="sco" href="questions.html">
       <file href="questions.html"/>
+      <dependency identifierref="common_files" />
+    </resource>
+    <resource identifier="p0_resource" type="webcontent" adlcp:scormtype="sco" href="Progress/Page_0.html">
+      <file href="Progress/Page_0.html"/>
       <dependency identifierref="common_files" />
     </resource>
     <resource identifier="p1_resource" type="webcontent" adlcp:scormtype="sco" href="Progress/Page_1.html">
