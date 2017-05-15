@@ -202,6 +202,11 @@ input[type=radio]:active + label:before {
   width: 250px;
 }
 
+.debug-input-sm {
+  width: 100px;
+}
+
+
 input[type=text] {
   font-family: "Oswald";
   padding: 5px;
@@ -210,11 +215,22 @@ input[type=text] {
   outline: none;
 }
 
+input[type=text].debug-input-sm {
+  border-left: none;
+}
+
 .log {
   flex: 1 1 0;
   align-self: flex-start;
   margin-top: 22px;
   width: calc(50% - 310px);
+      display: flex;
+    flex-direction: column;
+}
+
+.log ul {
+  height: 70vh;
+  overflow: auto;
 }
 
 .input {
@@ -223,4 +239,29 @@ input[type=text] {
 
 .error {
   color: red;
+}
+
+.clear {
+    border: black solid 4px;
+    padding: 5px 10px;
+    font-family: "Oswald";
+    display: inline-block;
+    text-align: center;
+    width: 50px;
+    align-self: center;
+    cursor: pointer;
+}
+
+.clear:hover {
+  color: white;
+  background: black;
+}
+
+.clear:active {
+  background: red;
+}
+
+
+.test {
+  background: red;
 }

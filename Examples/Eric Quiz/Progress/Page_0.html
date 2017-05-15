@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Page 1</title>
+  <title>Scorm Playground</title>
   <link href="https://fonts.googleapis.com/css?family=Oswald|Josefin+Slab|Inconsolata" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="../style.css">
 </head>
@@ -10,23 +10,26 @@
 <body>
 <div class="content">
   <div id="getlog" class="log">
+    <span class="clear"> CLEAR </span>
     <h2>Get Log</h2>
     <ul id="getlist">
     </ul>
   </div>
   <div class="pagenobox"><span class="pageno">This is Page 1</span></div>
   <div id="setlog" class="log">
+    <span class="clear"> CLEAR </span>
     <h2>Set Log</h2>
     <ul id="setlist">
     </ul>
   </div>
   <div class="debugbox">
     <div id="get" class="debug">
-      <input type="text" name="" class="debug-input">
+      <input type="text" name="" class="debug-input"  placeholder="value">
       <div class="debug-btn" id="get-btn"> get </div>
     </div>
     <div id="set" class="debug">
-      <input type="text" name="" class="debug-input">
+      <input type="text" name="" class="debug-input" placeholder="setting">
+      <input type="text" name="" class="debug-input-sm" placeholder="value">
       <div class="debug-btn" id="set-btn"> set </div>
     </div>
   </div>
@@ -83,16 +86,15 @@ function logGet() {
 
 function logSet() {
   if (lmsConnected) {
-    let input = this.previousElementSibling.value;
-    let param = input.split('|')[0];
-    let val = input.split('|')[1];
+    let param = this.previousElementSibling.previousElementSibling.value;
+    let val = this.previousElementSibling.value;
     let item = document.createElement('li');
     item.innerText = `> ${param}:  ${val}`;
     item.classList.add('input');
     setLog.append(item);
     let result = scorm.set(param, val);
     let r = document.createElement('li');
-    r.innerText = '<' + result;
+    r.innerText = '< ' + result;
     setLog.append(r);
   } else {
       let item = document.createElement('li');
@@ -109,11 +111,18 @@ function open() {
    lmsConnected = scorm.init();
 }
 
+function clearLog(e) {
+  let log = this.parentElement.getElementsByTagName('ul')[0];
+  log.innerHTML = '';
+}
+
 function close() {
   setBookmark(0);
   scorm.set('cmi.core.lesson_status', 'completed')
   scorm.quit();
 }
+
+document.querySelectorAll('.clear').forEach(element => element.addEventListener('click',clearLog));
 
 window.addEventListener('load', open);
 window.addEventListener('unload', close);
