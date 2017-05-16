@@ -40,6 +40,15 @@ const INTERACTION = {
   NUMERIC : "numeric"
 }
 
+// Global contsat object for legal interaction results
+// Additional legal response is a floating point number
+const RESULT = {
+  CORRECT: "correct";
+  WRONG: "wrong",
+  UNANTICIPATED: "unanticiated",
+  NEUTRAL: "neutral"
+}
+
 // Flag to turn debug messages on/off
 // Turn off for production
 // Use normal console statements for logging in production
