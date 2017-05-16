@@ -253,3 +253,55 @@ class Objectives {
     }
   }
 }
+
+// Interaction object for tracking student interactions
+// Takes in a config object to initialize the many available properties
+class Interaction {
+  constructor(index, config) {
+    Object.defineProperty(this, 'index', {
+      writable: false,
+      configurable: false,
+      value: index
+    });
+    this.id = config.id;
+
+    this.objectives
+    // objectives.n.id
+
+    this.time
+    // time interaction was completed (format HH:MM:SS.SS) WO
+
+    this.type = config.type;
+    // use INTERACTION types
+
+    this.correct_responses = config.correct_responses
+    // correct_responses.n.pattern
+    // can have multiple correct responses
+    // each pattern can be weighted differently
+    // dependent on type, types expect the following formats
+    // true-false: 0,1,t,f
+    // choice: 1 or mare characters[0-9,a-z,A-Z] seperated by a comma
+    //  student response will be single character
+    //  if multiple answers must be selected use CSV in {}
+    // fill-in: alphanumeric string, spaces significant
+    // numeric: single number with or without decimal
+    // likert: can be blank, no incorrect response
+    // matching: pairs of identifiers separated by a period
+    // performance: alphanumeric string 255 chars max
+    // sequencing: series of single characters [0-9,a-z,A-Z]
+
+    this.weighting = config.weighting;
+    // single floating point number, higher numbers weighted heavier
+
+    this.student_response
+    // see correct_responses for further details
+
+    this.result
+    // use legal values from RESULT constant or a floating point number
+
+    this.latency
+    // time from presentation of stimulus to completion of mesurable response
+    // ie how long it takes the student to answer the question
+
+  }
+}
