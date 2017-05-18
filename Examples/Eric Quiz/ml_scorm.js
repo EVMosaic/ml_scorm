@@ -218,9 +218,9 @@ class Objective {
   // object this method is probably redundant, but provides a way
   // to ensure that all values are saved on the object.
   save() {
-    scorm.set(`cmi.objectives.${this.index}.id`, newStatus);
-    scorm.set(`cmi.objectives.${this.index}.score`, newStatus);
-    scorm.set(`cmi.objectives.${this.index}.status`, newStatus);
+    scorm.set(`cmi.objectives.${this.index}.id`, this._id);
+    scorm.set(`cmi.objectives.${this.index}.score`, this._score.raw);
+    scorm.set(`cmi.objectives.${this.index}.status`, this._status);
     scorm.save();
   }
 }
