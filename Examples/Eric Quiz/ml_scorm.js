@@ -215,7 +215,7 @@ class Objective {
   }
 
   // Changes will be updated to the LMS as they are made to the
-  // object this method is probably redundant, but provides a way
+  // object. This method is probably redundant, but provides a way
   // to ensure that all values are saved on the object.
   save() {
     scorm.set(`cmi.objectives.${this.index}.id`, this._id);
@@ -227,14 +227,13 @@ class Objective {
 
 // Container class to hold all objectives for a SCO.
 // Contains methods for adding new objectives one at a time or in bulk
-class Objectives {
+class TrackedObjectives {
   constructor() {
     this.objectives = [];
-    console.log('constructing');
   }
 
   // Adds new objective to both the internal tracking and on the LMS
-  addNew(objectiveId) {
+  addObjective(objectiveId) {
     let newObjective = new Objective(this.objectives.length, objectiveId);
     this.objectives.push(newObjective);
   }
@@ -258,11 +257,11 @@ class Objectives {
 // Interaction object for tracking student interactions
 // Takes in a config object to initialize the many available properties
 class Interaction {
-  constructor(config) {
+  constructor(index, config) {
     Object.defineProperty(this, 'index', {
       writable: false,
       configurable: false,
-      value: config.index
+      value: index
     });
 
     this._id = config.id;
@@ -327,96 +326,129 @@ class Interaction {
     // ie how long it takes the student to answer the question
     // optional
 
+    // takes values and writes initial state to LMS
+    this.initialize()
+
   }
 
   // Sets ID of interaction. This is a string on the LMS.
   set id(newId) {
     this._id = newId;
-    setValue(`cmi.objectives.${this.index}.id`, newId);
+    setValue(`cmi.interactions.${this.index}.id`, newId);
   }
+
   // Pulls interaction ID from LMS
+  // This is write only value on LMS, returned value is from object
   get id() {
-    this._id = getValue(`cmi.objectives.${this.index}.id`);
     return this._id;
   }
-// Sets type of interaction. This needs to be a legal value from the INTERACTION const
+
+  // Sets type of interaction.
+  // This needs to be a legal value from the INTERACTION const
   set type(newType) {
     this._type = newType;
     setValue(`cmi.objectives.${this.index}.type`, newType);
   }
-  // Pulls interaction type from LMS
+
+  // Returns interaction type.
+  // This is a write only value on LMS, returned value is from object
   get type() {
-    this._type = getValue(`cmi.objectives.${this.index}.type`);
     return this._type;
   }
 
+  // Sets new objective array for interactions.
   // objectives is currently set up to use the Objective objects
   // but since there is no actual realtion and you can only track
   // a string it may make sense to do this through just a string
-  set objectives(newObjective) {
-    for (i=0; i<this._objectives.length; i++) {
+  set objectives(newObjectives) {
+    this._objectives = newObjectives;
+    for (i=0; i<this.newObjectives.length; i++) {
       scorm.set(`cmi.interactions.${this.index}.objectives.$[i}.id`, this._objectives[i].id);
     }
+    scorm.save();
   }
 
+  // Gets interactions objectives array and logs the current count.
+  // Can get rid of log if desired.
   get objectives() {
     DEBUG.log(`there are currently ${getValue(`cmi.interactions.${this.index}.objectives._count`)} interaction objectives`);
     return this._objectives;
   }
 
+  // Sets finishTime and updates latency based on start time.
   set finishTime(t) {
     this._finishTime = t;
     this._latency = formatTime(this.startTime - t);
-    scorm.set(`cmi.objectives.${this.index}.time`, t);
-    scorm.set(`cmi.objectives.${this.index}.latency`, this._latency);
+    scorm.set(`cmi.interactions.${this.index}.time`, t);
+    scorm.set(`cmi.interactions.${this.index}.latency`, this._latency);
     scorm.save();
   }
 
+  // Returns finish time
   get finishTime() {
     return this._finishTime;
   }
 
+  // Adds correct response patterns to interaction in sequential order.
+  // Patterns are dependent on the type of interaction.
   set correct_responses(newResponses) {
     this.correct_responses = newResponses;
     for (i=0; i<this.correct_responses.length; i++) {
       scorm.set(`cmi.interactions.${this.index}.correct_responses.${i}.pattern`, this._correct_responses[i];
     }
+    scorm.save();
   }
 
+  // Gets the correct_response array and logs the count
+  // Can get rid of log if desired
   get correct_responses() {
     DEBUG.log(`there are currently ${getValue(`cmi.interactions.${this.index}.correct_responses._count`)} correct response patterns`);
     return this._correct_responses;
   }
 
+  // Sets the score weighting of the interaction
   set weighting(newWeight) {
     this._weighting = newWeight;
     setValue(`cmi.interactions.${this.index}.correct_responses`, newWeight);
   }
 
+  // Gets the score weigthing of the interaction
+  // This is a write only value on LMS, returned value is from object
   get weighting() {
     return this._weighting;
   }
 
+  // Sets student_response
+  // Response format is dependent on the type of interaction
   set student_response(newResponse) {
     this._student_response = newResponse;
     setValue(`cmi.interactions.${this.index}.student_response`, newResponse);
   }
 
+  // Gets student_response
+  // This is a write only value on LMS, returned value is from object
   get student_response() {
     return this._student_response;
   }
 
+  // Sets interaction result
+  // This needs to be a legal value from the RESULT constant
   set result(newResult) {
     this._result = newResult;
     setValue(`cmi.interactions.${this.index}.result`, newResult);
   }
 
+  // Gets result
+  // This is a write only value on LMS, returned value is from object
   get result() {
     return this._result;
   }
 
 
-
+  // Initializes interaction object and logs state to LMS.
+  // Some values ie startTime, finishTime need to be updated at later points
+  // through the begin() and complete() methods.
+  // This method is called automatically at creation.
   initialize() {
     scorm.set(`cmi.interactions.${this.index}.id`, this._id);
     scorm.set(`cmi.interactions.${this.index}.type`, this._type);
@@ -431,11 +463,21 @@ class Interaction {
     scorm.save();
   }
 
+  // Helper function to format the current time to an acceptable format for LMS
+  // the LMS expects HH:MM:SS.SS for cmi.interactions.n.time
+  // and HHHH:MM:SS.SS for cmi.interactions.n.latency
+  // the decimal seconds are optional but can only take two digits.
+  // The first two digits on latency (HH) are optional but are currently
+  // formatted with padded zeros.
   formatCurrentTime() {
     let date = new Date();
     return date.toTimeString().slice(0,8);
   }
 
+
+// This formats time for cmi.interactions.n.latency which expects HHHH:MM:SS.SS
+// Takes in time as milliseconds and outputs a formatted string.
+// Easiest way to use is formatTime(d1-d2) where d1 and d2 are both Date objects
 // This will only work reliably for time periods under 24 hours in length;
 // If we need to track times greater than 24 hours between interactions
 // this will need to be rewritten to manipulate t directly
@@ -449,15 +491,71 @@ class Interaction {
     return formattedTime;
   }
 
+  // After object has been initialized call this to begin an interaction.
+  // Currently sets startTime for latency calculations but can be
+  // updated with any other actions that need to happen at start time
+  // Consider giving this an argument to accept a function to be executed
+  // so that individual interactions can call their own functions.
   begin() {
     this._startTime = formatCurrentTime();
   }
 
+  // After interaction has been started with begin() use this to complete
+  // an interaction. It sets the finishTime and Latency, but can be updated
+  // with any other actions that need to happen at completion time.
+  // Consider giving this an argument to accept a function to be executed
+  // so that individual interactions can call their own functions.
   complete() {
     this._finishTime = formatCurrentTime();
     this._latency = formatTime(this.startTime - this.finishTime);
 
     scorm.set(`cmi.interactions.${this.index}.time`, this._result);
-
+    scorm.set(`cmi.interactions.${this.index}.latency`, this._latency);
+    scorm.save();
   }
+
+  // Changes will be updated to the LMS as they are made to the
+  // object. This method is probably redundant, but provides a way
+  // to ensure that all values are saved on the object.
+  // The objectives and correct_response loop gets reused a lot
+  // consider refactoring into a function. Should be able to get both in one
+  // updateList or something
+  save() {
+    scorm.set(`cmi.interactions.${this.index}.id`, this._id);
+    scorm.set(`cmi.interactions.${this.index}.type`, this._type);
+    for (i=0; i<this._objectives.length; i++) {
+      scorm.set(`cmi.interactions.${this.index}.objectives.$[i}.id`, this._objectives[i].id);
+    }
+    scorm.set(`cmi.interactions.${this.index}.time`, this._finishTime);
+    for (i=0; i<this.correct_responses.length; i++) {
+      scorm.set(`cmi.interactions.${this.index}.correct_responses.${i}.pattern`, this._correct_responses[i];
+    }
+    scorm.set(`cmi.interactions.${this.index}.weighting`, this._weighting);
+    scorm.set(`cmi.interactions.${this.index}.student_response`, this._student_response);
+    scorm.set(`cmi.interactions.${this.index}.result`, this._result);
+    scorm.set(`cmi.interactions.${this.index}.latency`, this._latency);
+    scorm.save();
+  }
+}
+
+// Class for tracking a collection of Interactions
+// Doesn't do a whole lot right now other than ensure added interactions go
+// in sequntial order.
+// Consider turning into factory method and having interactions array be external
+class TrackedInteractions {
+  constructor() {
+    this.interactions = [];
+  }
+
+  // Creates and adds new interaction to the tracked array.
+  // Places in next availlable slot on the LMS
+  // To update existing ones interact with the objects
+  // TODO Need way to manage interactions that have been completed in a previous session
+  //      for scoring purposes;
+  addInteraction(config) {
+    index = getValue('cmi.interactions._count');
+    let newInteraction = new Interaction(index, config);
+    this.interactions.push(newInteraction);
+  }
+
 }
