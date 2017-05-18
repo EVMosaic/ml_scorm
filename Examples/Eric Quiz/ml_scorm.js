@@ -153,7 +153,7 @@ class Score {
 // Index is frozen at creation and cannot be changed.
 // Values autosave to the LMS when they are updated.
 
-
+// TODO consider rewriting getters to not pull from LMS if value present
 class Objective {
   // Creates a new Objective object and adds it to LMS
   // Index is non editable after creation.
@@ -174,6 +174,17 @@ class Objective {
   complete() {
     this._status = STATUS.COMPLETED
     setValue(`cmi.objectives.${this.index}.status`, this._status);
+  }
+
+  // Sets ID of objective. This is a string on the LMS.
+  set id(newId) {
+    this._id = newId;
+    setValue(`cmi.objectives.${this.index}.id`, newId);
+  }
+  // Pulls objective ID from LMS
+  get id() {
+    this._id = getValue(`cmi.objectives.${this.index}.id`);
+    return this._id;
   }
 
   // Update status with more control than complete()
@@ -203,16 +214,6 @@ class Objective {
     return this._score.raw;
   }
 
-  // Sets ID of objective. This is a string on the LMS.
-  set id(newId) {
-    this._id = newId;
-    setValue(`cmi.objectives.${this.index}.id`, newId);
-  }
-  // Pulls objective ID from LMS
-  get id() {
-    this._id = getValue(`cmi.objectives.${this.index}.id`);
-    return this._id;
-  }
   // Changes will be updated to the LMS as they are made to the
   // object this method is probably redundant, but provides a way
   // to ensure that all values are saved on the object.
@@ -263,27 +264,32 @@ class Interaction {
       configurable: false,
       value: config.index
     });
-    this.id = config.id;
+
+    this._id = config.id;
     // must be unique
     // required
 
-    this.objectives = config.objectives;
+    this._type = config.type;
+    // use INTERACTION types
+    // required
+
+    this._objectives = config.objectives;
     // objectives.n.id
     // this is purely informative, there is no actual linking to
     // Objectives
     // optional
 
-    this.startTime = "00:00:00.0"
+    this._startTime = "00:00:00.0"
 
-    this.finishTime = "00:00:00.0";
+    this._finishTime = "00:00:00.0";
+    // this is inconsistently documented as both the time interaction
+    //  was first shown to student, and time interaction was completed
+    //  im going to use completed for tracking, but if you want to change
+    //  that feel free
     // time interaction was completed (format HH:MM:SS.SS) WO
     // optional
 
-    this.type = config.type;
-    // use INTERACTION types
-    // required
-
-    this.correct_responses = config.correct_responses;
+    this._correct_responses = config.correct_responses;
     // correct_responses.n.pattern
     // purely informational - developer can use at discression
     // useful for logs and analysis
@@ -297,22 +303,161 @@ class Interaction {
     // fill-in: alphanumeric string, spaces significant
     // numeric: single number with or without decimal
     // likert: can be blank, no incorrect response
+    //  strongly agree - agree - neutral - disagree - strongly disagree
     // matching: pairs of identifiers separated by a period
     // performance: alphanumeric string 255 chars max
     // sequencing: series of single characters [0-9,a-z,A-Z]
+    // optional
 
-    this.weighting = config.weighting;
+    this._weighting = config.weighting;
     // single floating point number, higher numbers weighted heavier
+    // optional
 
-    this.student_response
+    this._student_response = '';
     // see correct_responses for further details
+    // optional
 
-    this.result
+    this._result = RESULT.NEUTRAL;
     // use legal values from RESULT constant or a floating point number
+    // optional
 
-    this.latency
+    this._latency = "00:00:00.0";
+    // HHHH:MM:SS.SS
     // time from presentation of stimulus to completion of mesurable response
     // ie how long it takes the student to answer the question
+    // optional
+
+  }
+
+  // Sets ID of interaction. This is a string on the LMS.
+  set id(newId) {
+    this._id = newId;
+    setValue(`cmi.objectives.${this.index}.id`, newId);
+  }
+  // Pulls interaction ID from LMS
+  get id() {
+    this._id = getValue(`cmi.objectives.${this.index}.id`);
+    return this._id;
+  }
+// Sets type of interaction. This needs to be a legal value from the INTERACTION const
+  set type(newType) {
+    this._type = newType;
+    setValue(`cmi.objectives.${this.index}.type`, newType);
+  }
+  // Pulls interaction type from LMS
+  get type() {
+    this._type = getValue(`cmi.objectives.${this.index}.type`);
+    return this._type;
+  }
+
+  // objectives is currently set up to use the Objective objects
+  // but since there is no actual realtion and you can only track
+  // a string it may make sense to do this through just a string
+  set objectives(newObjective) {
+    for (i=0; i<this._objectives.length; i++) {
+      scorm.set(`cmi.interactions.${this.index}.objectives.$[i}.id`, this._objectives[i].id);
+    }
+  }
+
+  get objectives() {
+    DEBUG.log(`there are currently ${getValue(`cmi.interactions.${this.index}.objectives._count`)} interaction objectives`);
+    return this._objectives;
+  }
+
+  set finishTime(t) {
+    this._finishTime = t;
+    this._latency = formatTime(this.startTime - t);
+    scorm.set(`cmi.objectives.${this.index}.time`, t);
+    scorm.set(`cmi.objectives.${this.index}.latency`, this._latency);
+    scorm.save();
+  }
+
+  get finishTime() {
+    return this._finishTime;
+  }
+
+  set correct_responses(newResponses) {
+    this.correct_responses = newResponses;
+    for (i=0; i<this.correct_responses.length; i++) {
+      scorm.set(`cmi.interactions.${this.index}.correct_responses.${i}.pattern`, this._correct_responses[i];
+    }
+  }
+
+  get correct_responses() {
+    DEBUG.log(`there are currently ${getValue(`cmi.interactions.${this.index}.correct_responses._count`)} correct response patterns`);
+    return this._correct_responses;
+  }
+
+  set weighting(newWeight) {
+    this._weighting = newWeight;
+    setValue(`cmi.interactions.${this.index}.correct_responses`, newWeight);
+  }
+
+  get weighting() {
+    return this._weighting;
+  }
+
+  set student_response(newResponse) {
+    this._student_response = newResponse;
+    setValue(`cmi.interactions.${this.index}.student_response`, newResponse);
+  }
+
+  get student_response() {
+    return this._student_response;
+  }
+
+  set result(newResult) {
+    this._result = newResult;
+    setValue(`cmi.interactions.${this.index}.result`, newResult);
+  }
+
+  get result() {
+    return this._result;
+  }
+
+
+
+  initialize() {
+    scorm.set(`cmi.interactions.${this.index}.id`, this._id);
+    scorm.set(`cmi.interactions.${this.index}.type`, this._type);
+    for (i=0; i<this._objectives.length; i++) {
+      scorm.set(`cmi.interactions.${this.index}.objectives.$[i}.id`, this._objectives[i].id);
+    }
+    for (i=0; i<this.correct_responses.length; i++) {
+      scorm.set(`cmi.interactions.${this.index}.correct_responses.${i}.pattern`, this._correct_responses[i];
+    }
+    scorm.set(`cmi.interactions.${this.index}.weighting`, this._weighting);
+    scorm.set(`cmi.interactions.${this.index}.result`, this._result);
+    scorm.save();
+  }
+
+  formatCurrentTime() {
+    let date = new Date();
+    return date.toTimeString().slice(0,8);
+  }
+
+// This will only work reliably for time periods under 24 hours in length;
+// If we need to track times greater than 24 hours between interactions
+// this will need to be rewritten to manipulate t directly
+  formatTime(t) {
+    let date = new Date(t);
+    let hours = String('0000' + date.getUTCHours()).slice(-4);
+    let minutes = date.getUTCMinutes();
+    let seconds = date.getUTCSeconds();
+    let milliseconds = String(date.getUTCMilliseconds()).substring(0,2);
+    let formattedTime =  `${hours}:${minutes}:${seconds}.${milliseconds}`;
+    return formattedTime;
+  }
+
+  begin() {
+    this._startTime = formatCurrentTime();
+  }
+
+  complete() {
+    this._finishTime = formatCurrentTime();
+    this._latency = formatTime(this.startTime - this.finishTime);
+
+    scorm.set(`cmi.interactions.${this.index}.time`, this._result);
 
   }
 }
