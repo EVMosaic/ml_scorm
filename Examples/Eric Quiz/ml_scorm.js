@@ -257,25 +257,36 @@ class Objectives {
 // Interaction object for tracking student interactions
 // Takes in a config object to initialize the many available properties
 class Interaction {
-  constructor(index, config) {
+  constructor(config) {
     Object.defineProperty(this, 'index', {
       writable: false,
       configurable: false,
-      value: index
+      value: config.index
     });
     this.id = config.id;
+    // must be unique
+    // required
 
-    this.objectives
+    this.objectives = config.objectives;
     // objectives.n.id
+    // this is purely informative, there is no actual linking to
+    // Objectives
+    // optional
 
-    this.time
+    this.startTime = "00:00:00.0"
+
+    this.finishTime = "00:00:00.0";
     // time interaction was completed (format HH:MM:SS.SS) WO
+    // optional
 
     this.type = config.type;
     // use INTERACTION types
+    // required
 
-    this.correct_responses = config.correct_responses
+    this.correct_responses = config.correct_responses;
     // correct_responses.n.pattern
+    // purely informational - developer can use at discression
+    // useful for logs and analysis
     // can have multiple correct responses
     // each pattern can be weighted differently
     // dependent on type, types expect the following formats
