@@ -30,7 +30,7 @@ const EXIT = {
 
 // Global constant object for legal interaction types;
 const INTERACTION = {
-  TF : "true-false}",
+  TRUE_FALSE : "true-false}",
   CHOICE : "choice",
   FILL : "fill-in",
   MATCH : "matching",
