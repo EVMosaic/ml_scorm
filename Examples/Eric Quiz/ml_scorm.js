@@ -558,5 +558,18 @@ class TrackedInteractions {
     let newInteraction = new Interaction(index, config);
     this.interactions.push(newInteraction);
   }
+}
 
+class InteractionConfig {
+  constructor() {
+    this.id = "";
+    this.type = "";
+    this.objectives = [];
+    this.time = "";
+    this.correct_responses = [];
+    this.weighting = 1;
+    this.student_response = "";
+    this.relust = "";
+    this.latency = "";
+  }
 }
