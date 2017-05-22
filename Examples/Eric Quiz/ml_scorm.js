@@ -43,7 +43,7 @@ const INTERACTION = {
 // Global contsat object for legal interaction results
 // Additional legal response is a floating point number
 const RESULT = {
-  CORRECT: "correct";
+  CORRECT: "correct",
   WRONG: "wrong",
   UNANTICIPATED: "unanticiated",
   NEUTRAL: "neutral"
@@ -227,6 +227,7 @@ class Objective {
 
 // Container class to hold all objectives for a SCO.
 // Contains methods for adding new objectives one at a time or in bulk
+// Should this be a class?? Can we make this just an object?
 class TrackedObjectives {
   constructor() {
     this.objectives = [];
@@ -394,7 +395,7 @@ class Interaction {
   set correct_responses(newResponses) {
     this.correct_responses = newResponses;
     for (i=0; i<this.correct_responses.length; i++) {
-      scorm.set(`cmi.interactions.${this.index}.correct_responses.${i}.pattern`, this._correct_responses[i];
+      scorm.set(`cmi.interactions.${this.index}.correct_responses.${i}.pattern`, this._correct_responses[i]);
     }
     scorm.save();
   }
@@ -456,7 +457,7 @@ class Interaction {
       scorm.set(`cmi.interactions.${this.index}.objectives.$[i}.id`, this._objectives[i].id);
     }
     for (i=0; i<this.correct_responses.length; i++) {
-      scorm.set(`cmi.interactions.${this.index}.correct_responses.${i}.pattern`, this._correct_responses[i];
+      scorm.set(`cmi.interactions.${this.index}.correct_responses.${i}.pattern`, this._correct_responses[i]);
     }
     scorm.set(`cmi.interactions.${this.index}.weighting`, this._weighting);
     scorm.set(`cmi.interactions.${this.index}.result`, this._result);
@@ -528,7 +529,7 @@ class Interaction {
     }
     scorm.set(`cmi.interactions.${this.index}.time`, this._finishTime);
     for (i=0; i<this.correct_responses.length; i++) {
-      scorm.set(`cmi.interactions.${this.index}.correct_responses.${i}.pattern`, this._correct_responses[i];
+      scorm.set(`cmi.interactions.${this.index}.correct_responses.${i}.pattern`, this._correct_responses[i]);
     }
     scorm.set(`cmi.interactions.${this.index}.weighting`, this._weighting);
     scorm.set(`cmi.interactions.${this.index}.student_response`, this._student_response);
