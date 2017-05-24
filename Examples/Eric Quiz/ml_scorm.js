@@ -45,7 +45,7 @@ const INTERACTION = {
 const RESULT = {
   CORRECT: "correct",
   WRONG: "wrong",
-  UNANTICIPATED: "unanticiated",
+  UNANTICIPATED: "unanticipated",
   NEUTRAL: "neutral"
 }
 
