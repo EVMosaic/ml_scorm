@@ -16,6 +16,42 @@
   <organizations default="eric_test">
     <organization identifier="eric_test">
       <title>Eric Makes A Scorm Package</title>
+      <item identifier="l_1">
+        <title> Level 1 </title>
+        <item identifier="l_1a" identifierref="l1_resource">
+          <title> Level 1.a </title>
+        </item>
+        <item identifier="l_1b" identifierref="l1_resource">
+          <title> Level 1.b </title>
+        </item>
+        <item identifier="l_1c" identifierref="l1_resource">
+          <title> Level 1.c </title>
+        </item>
+        <item identifier="l_2">
+          <title> Level 2 </title>
+          <item identifier="l_2a" identifierref="l1_resource">
+            <title> Level 2.a </title>
+          </item>
+          <item identifier="l_2b" identifierref="l1_resource">
+            <title> Level 2.b </title>
+          </item>
+          <item identifier="l_2c" identifierref="l1_resource">
+            <title> Level 2.c </title>
+          </item>
+          <item identifier="l_3">
+            <title> Level 3 </title>
+            <item identifier="l_3a" identifierref="l1_resource">
+              <title> Level 3.a </title>
+            </item>
+            <item identifier="l_3b" identifierref="l1_resource">
+              <title> Level 3.b </title>
+            </item>
+            <item identifier="l_3c" identifierref="l1_resource">
+              <title> Level 3.c </title>
+            </item>
+          </item>
+        </item>
+      </item>
 
       <item identifier="tracked_items">
         <title>Tracked Content</title>
@@ -114,6 +150,10 @@
   </organizations>
 
   <resources>
+    <resource identifier="l1_resource" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="index.html"/>
+      <dependency identifierref="common_files" />
+    </resource>
     <!-- Note that with the addition of run-time calls, we changed the scormtype to SCO.-->
     <resource identifier="eric_quiz_resource" type="webcontent" adlcp:scormtype="sco" href="questions.html">
       <file href="questions.html"/>
