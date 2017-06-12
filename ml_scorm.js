@@ -19,6 +19,7 @@ const STATUS = {
   BROWSED : "browsed",
   NOT_ATTEMPTED : "not attempted"
 }
+Object.freeze(STATUS);
 
 // Global constant object for legal exit conditions;
 const EXIT = {
@@ -27,6 +28,7 @@ const EXIT = {
   LOGOUT : "logout",
   NORMAL : ""
 }
+Object.freeze(EXIT);
 
 // Global constant object for legal interaction types;
 const INTERACTION = {
@@ -39,6 +41,7 @@ const INTERACTION = {
   SEQUENCE : "sequencing",
   NUMERIC : "numeric"
 }
+Object.freeze(INTERACTION);
 
 // Global contsat object for legal interaction results
 // Additional legal response is a floating point number
@@ -48,6 +51,7 @@ const RESULT = {
   UNANTICIPATED: "unanticipated",
   NEUTRAL: "neutral"
 }
+Object.freeze(RESULT);
 
 // Flag to turn debug messages on/off
 // Turn off for production
@@ -79,6 +83,7 @@ const DEBUG = {
     }
   }
 }
+Object.freeze(DEBUG);
 
 // Called once a SCO has been loaded to get connection to LMS
 // Handles LMSInitalize
