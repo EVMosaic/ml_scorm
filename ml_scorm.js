@@ -4,150 +4,152 @@
 // This version has only been tested with SCORM 1.2
 
 // Shortcut access to pipwerks SCORM functionality
-let scorm = pipwerks.SCORM;
+const scorm = pipwerks.SCORM;
 
-// Used to determine if communicatoin is happening with the LMS
-// Not sure if this is neccesarry, pipwerks may handle this internally
-let lmsConnected = false;
+const ml_scorm = {}
+  // Used to determine if communicatoin is happening with the LMS
+  // Not sure if this is neccesarry, pipwerks may handle this internally
+ml_scorm.lmsConnected = false;
 
 // Global constant object for legal status types;
-const STATUS = {
-  PASSED : "passed",
-  FAILED : "failed",
-  COMPLETED : "completed",
-  INCOMPLETE : "incomplete",
-  BROWSED : "browsed",
-  NOT_ATTEMPTED : "not attempted"
+ml_scorm.STATUS = {
+  PASSED: "passed",
+  FAILED: "failed",
+  COMPLETED: "completed",
+  INCOMPLETE: "incomplete",
+  BROWSED: "browsed",
+  NOT_ATTEMPTED: "not attempted"
 }
-Object.freeze(STATUS);
+Object.freeze(ml_scorm.STATUS);
 
 // Global constant object for legal exit conditions;
-const EXIT = {
-  TIMEOUT : "time-out",
-  SUSPENED : "suspend",
-  LOGOUT : "logout",
-  NORMAL : ""
+ml_scorm.EXIT = {
+  TIMEOUT: "time-out",
+  SUSPENED: "suspend",
+  LOGOUT: "logout",
+  NORMAL: ""
 }
-Object.freeze(EXIT);
+Object.freeze(ml_scorm.EXIT);
 
 // Global constant object for legal interaction types;
-const INTERACTION = {
-  TRUE_FALSE : "true-false}",
-  CHOICE : "choice",
-  FILL : "fill-in",
-  MATCH : "matching",
-  PERFORMANCE : "performance",
-  LIKERT : "likert",
-  SEQUENCE : "sequencing",
-  NUMERIC : "numeric"
+ml_scorm.INTERACTION = {
+  TRUE_FALSE: "true-false}",
+  CHOICE: "choice",
+  FILL: "fill-in",
+  MATCH: "matching",
+  PERFORMANCE: "performance",
+  LIKERT: "likert",
+  SEQUENCE: "sequencing",
+  NUMERIC: "numeric"
 }
-Object.freeze(INTERACTION);
+Object.freeze(ml_scorm.INTERACTION);
 
 // Global contsat object for legal interaction results
 // Additional legal response is a floating point number
-const RESULT = {
+ml_scorm.RESULT = {
   CORRECT: "correct",
   WRONG: "wrong",
   UNANTICIPATED: "unanticipated",
   NEUTRAL: "neutral"
 }
-Object.freeze(RESULT);
+Object.freeze(ml_scorm.RESULT);
 
 // Flag to turn debug messages on/off
 // Turn off for production
 // Use normal console statements for logging in production
-const DEBUG_ENABLED = true;
+ml_scorm.DEBUG_ENABLED = true;
 
-const DEBUG = {
-  LOG : function(msg) {
-    if (DEBUG_ENABLED) {
+ml_scorm.DEBUG = {
+  LOG: function(msg) {
+    if (this.DEBUG_ENABLED) {
       console.log(msg);
     }
   },
 
-  ERROR : function(msg) {
-    if (DEBUG_ENABLED) {
+  ERROR: function(msg) {
+    if (this.DEBUG_ENABLED) {
       console.error(msg);
     }
   },
 
-  WARN : function(msg) {
-    if (DEBUG_ENABLED) {
+  WARN: function(msg) {
+    if (this.DEBUG_ENABLED) {
       console.warn(msg);
     }
   },
 
-  INFO : function(msg) {
-    if (DEBUG_ENABLED) {
+  INFO: function(msg) {
+    if (this.DEBUG_ENABLED) {
       console.info(msg);
     }
   }
 }
-Object.freeze(DEBUG);
+Object.freeze(ml_scorm.DEBUG);
 
 // Called once a SCO has been loaded to get connection to LMS
 // Handles LMSInitalize
-function initSCO() {
-  lmsConnected = scorm.init();
+ml_scorm.initSCO = function() {
+  this.lmsConnected = scorm.init();
 }
 
 // Called once a SCO is unloaded. Neccesary to finalize interaction
 // Handles LMSFinish
-function closeSCO() {
+ml_scorm.closeSCO = function() {
   scorm.quit();
-  lmsConnected = false;
+  this.lmsConnected = false;
 }
 
 // Called when a SCO has been completed to mark in LMS as completed
-function completeSCO() {
-  setValue('cmi.core.lesson_status', STATUS.COMPLETED);
+ml_scorm.completeSCO = function() {
+  this.setValue('cmi.core.lesson_status', this.STATUS.COMPLETED);
 }
 
 // Convienience wrapper for setting SCORM variables. Auto saves on call.
 // NOTE if setting multiple values at once use scorm.set() directly and
 // save after setting the final value to avoid slow communication with LMS
-function setValue(param, value) {
-  if (lmsConnected) {
-    DEBUG.LOG(`setting ${param} to ${value}`);
+ml_scorm.setValue = function(param, value) {
+  if (this.lmsConnected) {
+    this.DEBUG.LOG(`setting ${param} to ${value}`);
     scorm.set(param, value);
     scorm.save();
+
   } else {
-    DEBUG.WARN('LMS NOT CONNECTED');
+    this.DEBUG.WARN('LMS NOT CONNECTED');
   }
 }
 
 // Convenience wrapper for getting SCROM variables.
 // All values are returned as strings. Remember to parse if you
 // are expecting a number
-function getValue(param) {
-  DEBUG.INFO(`retrieving value for ${param}`);
-  if (lmsConnected) {
+ml_scorm.getValue = function(param) {
+  this.DEBUG.INFO(`retrieving value for ${param}`);
+  if (this.lmsConnected) {
     let value = scorm.get(param);
-    DEBUG.LOG(`found value of ${value}`);
+    this.DEBUG.LOG(`found value of ${value}`);
     return value;
   } else {
-    DEBUG.WARN('LMS NOT CONNECTED');
+    this.DEBUG.WARN('LMS NOT CONNECTED');
   }
 }
 
 
 // Retrieves bookmark location from course
-function getBookmark() {
-  return getValue('cmi.core.lesson_location');
+ml_scorm.getBookmark = function() {
+  return this.getValue('cmi.core.lesson_location');
 }
 
 // Sets bookmark of location in course
-function setBookmark(location) {
-  setValue('cmi.core.lesson_location', location);
+ml_scorm.setBookmark = function(location) {
+  this.setValue('cmi.core.lesson_location', location);
 }
 
 // This is a helper object for the Objective class, but will probably be
 // needed in other places as well. No functionality at the moment.
-class Score {
-  constructor (raw=0, min=0, max=100) {
+ml_scorm.Score = class Score {
+  constructor(raw = 0, min = 0, max = 100) {
     this.raw = raw;
     this.min = min;
-    this.max =  max;
+    this.max = max;
   }
 }
 
@@ -159,36 +161,36 @@ class Score {
 // Values autosave to the LMS when they are updated.
 
 // TODO consider rewriting getters to not pull from LMS if value present
-class Objective {
+ml_scorm.Objective = class Objective {
   // Creates a new Objective object and adds it to LMS
   // Index is non editable after creation.
-  constructor(index, id="[New Objective]") {
+  constructor(index, id = "[New Objective]") {
     Object.defineProperty(this, 'index', {
       writable: false,
       configurable: false,
       value: index
     });
     this._id = id;
-    this._status = STATUS.NOT_ATTEMPTED;
-    this._score = new Score();
+    this._status = ml_scorm.STATUS.NOT_ATTEMPTED;
+    this._score = new ml_scorm.Score();
 
-    setValue(`cmi.objectives.${index}.id`, id);
+    ml_scorm.setValue(`cmi.objectives.${index}.id`, id);
   }
 
   // Convenience function for completing an objective
   complete() {
-    this._status = STATUS.COMPLETED
-    setValue(`cmi.objectives.${this.index}.status`, this._status);
+    this._status = ml_scorm.STATUS.COMPLETED
+    ml_scorm.setValue(`cmi.objectives.${this.index}.status`, this._status);
   }
 
   // Sets ID of objective. This is a string on the LMS.
   set id(newId) {
-    this._id = newId;
-    setValue(`cmi.objectives.${this.index}.id`, newId);
-  }
-  // Pulls objective ID from LMS
+      this._id = newId;
+      ml_scorm.setValue(`cmi.objectives.${this.index}.id`, newId);
+    }
+    // Pulls objective ID from LMS
   get id() {
-    this._id = getValue(`cmi.objectives.${this.index}.id`);
+    this._id = ml_scorm.getValue(`cmi.objectives.${this.index}.id`);
     return this._id;
   }
 
@@ -196,12 +198,12 @@ class Objective {
   // Expects a legal value from STATUS constant
   set status(newStatus) {
     this._status = newStatus;
-    setValue(`cmi.objectives.${this.index}.status`, newStatus);
+    ml_scorm.setValue(`cmi.objectives.${this.index}.status`, newStatus);
   }
 
   // Retrieve status of objective from LMS
   get status() {
-    this._status = getValue(`cmi.objectives.${this.index}.status`);
+    this._status = ml_scorm.getValue(`cmi.objectives.${this.index}.status`);
     return this._status;
   }
 
@@ -209,7 +211,7 @@ class Objective {
   // Currently takes in a raw score and records it.
   set score(rawScore) {
     this._score.raw = rawScore;
-    setValue(`cmi.objectives.${this.index}.score.raw`, rawScore);
+    ml_scorm.setValue(`cmi.objectives.${this.index}.score.raw`, rawScore);
   }
 
   // This is a read only property on the LMS so no retrival is done before
@@ -233,14 +235,14 @@ class Objective {
 // Container class to hold all objectives for a SCO.
 // Contains methods for adding new objectives one at a time or in bulk
 // Should this be a class?? Can we make this just an object?
-class TrackedObjectives {
+ml_scorm.TrackedObjectives = class TrackedObjectives {
   constructor() {
     this.objectives = [];
   }
 
   // Adds new objective to both the internal tracking and on the LMS
   addObjective(objectiveId) {
-    let newObjective = new Objective(this.objectives.length, objectiveId);
+    let newObjective = new ml_scorm.Objective(this.objectives.length, objectiveId);
     this.objectives.push(newObjective);
   }
 
@@ -250,9 +252,9 @@ class TrackedObjectives {
   // the time it is run. Can be expanded at some point to include
   // more involved checking and adding of missing or updated objectives.
   initializeList(listOfIds) {
-    let currentObjectivesCount = parseInt(getValue('cmi.object._count'));
+    let currentObjectivesCount = parseInt(ml_scorm.getValue('cmi.object._count'));
     if (currentObjectivesCount) {
-      DEBUG.log('objectives already initialized');
+      ml_scorm.DEBUG.log('objectives already initialized');
       return;
     } else {
       listOfIds.forEach(obj => this.addObjective(obj));
@@ -262,7 +264,7 @@ class TrackedObjectives {
 
 // Interaction object for tracking student interactions
 // Takes in a config object to initialize the many available properties
-class Interaction {
+ml_scorm.Interaction = class Interaction {
   constructor(index, config) {
     Object.defineProperty(this, 'index', {
       writable: false,
@@ -288,9 +290,9 @@ class Interaction {
 
     this._finishTime = "00:00:00.0";
     // this is inconsistently documented as both the time interaction
-    //  was first shown to student, and time interaction was completed
-    //  im going to use completed for tracking, but if you want to change
-    //  that feel free
+    // was first shown to student, and time interaction was completed
+    // im going to use completed for tracking, but if you want to change
+    // that feel free
     // time interaction was completed (format HH:MM:SS.SS) WO
     // optional
 
@@ -340,7 +342,7 @@ class Interaction {
   // Sets ID of interaction. This is a string on the LMS.
   set id(newId) {
     this._id = newId;
-    setValue(`cmi.interactions.${this.index}.id`, newId);
+    ml_scorm.setValue(`cmi.interactions.${this.index}.id`, newId);
   }
 
   // Pulls interaction ID from LMS
@@ -353,7 +355,7 @@ class Interaction {
   // This needs to be a legal value from the INTERACTION const
   set type(newType) {
     this._type = newType;
-    setValue(`cmi.objectives.${this.index}.type`, newType);
+    ml_scorm.setValue(`cmi.objectives.${this.index}.type`, newType);
   }
 
   // Returns interaction type.
@@ -368,7 +370,7 @@ class Interaction {
   // a string it may make sense to do this through just a string
   set objectives(newObjectives) {
     this._objectives = newObjectives;
-    for (i=0; i<this.newObjectives.length; i++) {
+    for (i = 0; i < this.newObjectives.length; i++) {
       scorm.set(`cmi.interactions.${this.index}.objectives.$[i}.id`, this._objectives[i].id);
     }
     scorm.save();
@@ -377,7 +379,8 @@ class Interaction {
   // Gets interactions objectives array and logs the current count.
   // Can get rid of log if desired.
   get objectives() {
-    DEBUG.log(`there are currently ${getValue(`cmi.interactions.${this.index}.objectives._count`)} interaction objectives`);
+    let ccount = ml_scorm.getValue(`cmi.interactions.${this.index}.objectives._count`);
+    ml_scorm.DEBUG.log(`there are currently ${count} interaction objectives`);
     return this._objectives;
   }
 
@@ -399,7 +402,7 @@ class Interaction {
   // Patterns are dependent on the type of interaction.
   set correct_responses(newResponses) {
     this.correct_responses = newResponses;
-    for (i=0; i<this.correct_responses.length; i++) {
+    for (i = 0; i < this.correct_responses.length; i++) {
       scorm.set(`cmi.interactions.${this.index}.correct_responses.${i}.pattern`, this._correct_responses[i]);
     }
     scorm.save();
@@ -408,14 +411,14 @@ class Interaction {
   // Gets the correct_response array and logs the count
   // Can get rid of log if desired
   get correct_responses() {
-    DEBUG.log(`there are currently ${getValue(`cmi.interactions.${this.index}.correct_responses._count`)} correct response patterns`);
+      ml_scorm.DEBUG.log(`there are currently ${ml_scorm.getValue(`cmi.interactions.${this.index}.correct_responses._count`)} correct response patterns`);
     return this._correct_responses;
   }
 
   // Sets the score weighting of the interaction
   set weighting(newWeight) {
     this._weighting = newWeight;
-    setValue(`cmi.interactions.${this.index}.correct_responses`, newWeight);
+    ml_scorm.setValue(`cmi.interactions.${this.index}.correct_responses`, newWeight);
   }
 
   // Gets the score weigthing of the interaction
@@ -428,7 +431,7 @@ class Interaction {
   // Response format is dependent on the type of interaction
   set student_response(newResponse) {
     this._student_response = newResponse;
-    setValue(`cmi.interactions.${this.index}.student_response`, newResponse);
+    ml_scorm.setValue(`cmi.interactions.${this.index}.student_response`, newResponse);
   }
 
   // Gets student_response
@@ -441,7 +444,7 @@ class Interaction {
   // This needs to be a legal value from the RESULT constant
   set result(newResult) {
     this._result = newResult;
-    setValue(`cmi.interactions.${this.index}.result`, newResult);
+    ml_scorm.setValue(`cmi.interactions.${this.index}.result`, newResult);
   }
 
   // Gets result
@@ -480,13 +483,12 @@ class Interaction {
     return date.toTimeString().slice(0,8);
   }
 
-
-// This formats time for cmi.interactions.n.latency which expects HHHH:MM:SS.SS
-// Takes in time as milliseconds and outputs a formatted string.
-// Easiest way to use is formatTime(d1-d2) where d1 and d2 are both Date objects
-// This will only work reliably for time periods under 24 hours in length;
-// If we need to track times greater than 24 hours between interactions
-// this will need to be rewritten to manipulate t directly
+  // This formats time for cmi.interactions.n.latency which expects HHHH:MM:SS.SS
+  // Takes in time as milliseconds and outputs a formatted string.
+  // Easiest way to use is formatTime(d1-d2) where d1 and d2 are both Date objects
+  // This will only work reliably for time periods under 24 hours in length;
+  // If we need to track times greater than 24 hours between interactions
+  // this will need to be rewritten to manipulate t directly
   formatTime(t) {
     let date = new Date(t);
     let hours = String('0000' + date.getUTCHours()).slice(-4);
@@ -503,7 +505,7 @@ class Interaction {
   // Consider giving this an argument to accept a function to be executed
   // so that individual interactions can call their own functions.
   begin() {
-    this._startTime = formatCurrentTime();
+    this._startTime = this.formatCurrentTime();
   }
 
   // After interaction has been started with begin() use this to complete
@@ -512,8 +514,8 @@ class Interaction {
   // Consider giving this an argument to accept a function to be executed
   // so that individual interactions can call their own functions.
   complete() {
-    this._finishTime = formatCurrentTime();
-    this._latency = formatTime(this.startTime - this.finishTime);
+    this._finishTime = this.formatCurrentTime();
+    this._latency = this.formatTime(this.startTime - this.finishTime);
 
     scorm.set(`cmi.interactions.${this.index}.time`, this._result);
     scorm.set(`cmi.interactions.${this.index}.latency`, this._latency);
@@ -548,7 +550,7 @@ class Interaction {
 // Doesn't do a whole lot right now other than ensure added interactions go
 // in sequntial order.
 // Consider turning into factory method and having interactions array be external
-class TrackedInteractions {
+ml_scorm.TrackedInteractions = class TrackedInteractions {
   constructor() {
     this.interactions = [];
   }
@@ -559,13 +561,13 @@ class TrackedInteractions {
   // TODO Need way to manage interactions that have been completed in a previous session
   //      for scoring purposes;
   addInteraction(config) {
-    index = getValue('cmi.interactions._count');
-    let newInteraction = new Interaction(index, config);
+    index = ml_scorm.getValue('cmi.interactions._count');
+    let newInteraction = new ml_scorm.Interaction(index, config);
     this.interactions.push(newInteraction);
   }
 }
 
-class InteractionConfig {
+ml_scorm.InteractionConfig = class InteractionConfig {
   constructor() {
     this.id = "";
     this.type = "";
