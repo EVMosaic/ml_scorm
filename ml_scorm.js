@@ -61,25 +61,25 @@ ml_scorm.DEBUG_ENABLED = true;
 
 ml_scorm.DEBUG = {
   LOG: function(msg) {
-    if (this.DEBUG_ENABLED) {
+    if (ml_scorm.DEBUG_ENABLED) {
       console.log(msg);
     }
   },
 
   ERROR: function(msg) {
-    if (this.DEBUG_ENABLED) {
+    if (ml_scorm.DEBUG_ENABLED) {
       console.error(msg);
     }
   },
 
   WARN: function(msg) {
-    if (this.DEBUG_ENABLED) {
+    if (ml_scorm.DEBUG_ENABLED) {
       console.warn(msg);
     }
   },
 
   INFO: function(msg) {
-    if (this.DEBUG_ENABLED) {
+    if (ml_scorm.DEBUG_ENABLED) {
       console.info(msg);
     }
   }
@@ -89,32 +89,36 @@ Object.freeze(ml_scorm.DEBUG);
 // Called once a SCO has been loaded to get connection to LMS
 // Handles LMSInitalize
 ml_scorm.initSCO = function() {
-  this.lmsConnected = scorm.init();
+  ml_scorm.lmsConnected = scorm.init();
 }
 
 // Called once a SCO is unloaded. Neccesary to finalize interaction
 // Handles LMSFinish
 ml_scorm.closeSCO = function() {
   scorm.quit();
-  this.lmsConnected = false;
+  ml_scorm.lmsConnected = false;
 }
 
 // Called when a SCO has been completed to mark in LMS as completed
 ml_scorm.completeSCO = function() {
-  this.setValue('cmi.core.lesson_status', this.STATUS.COMPLETED);
+  ml_scorm.setValue('cmi.core.lesson_status', ml_scorm.STATUS.COMPLETED);
+}
+
+ml_scorm.scoreSCO = function(score) {
+  ml_scorm.setValue('cmi.core.score.raw', score);
 }
 
 // Convienience wrapper for setting SCORM variables. Auto saves on call.
 // NOTE if setting multiple values at once use scorm.set() directly and
 // save after setting the final value to avoid slow communication with LMS
 ml_scorm.setValue = function(param, value) {
-  if (this.lmsConnected) {
-    this.DEBUG.LOG(`setting ${param} to ${value}`);
+  if (ml_scorm.lmsConnected) {
+    ml_scorm.DEBUG.LOG(`setting ${param} to ${value}`);
     scorm.set(param, value);
     scorm.save();
 
   } else {
-    this.DEBUG.WARN('LMS NOT CONNECTED');
+    ml_scorm.DEBUG.WARN('LMS NOT CONNECTED');
   }
 }
 
@@ -122,26 +126,28 @@ ml_scorm.setValue = function(param, value) {
 // All values are returned as strings. Remember to parse if you
 // are expecting a number
 ml_scorm.getValue = function(param) {
-  this.DEBUG.INFO(`retrieving value for ${param}`);
-  if (this.lmsConnected) {
+  ml_scorm.DEBUG.INFO(`retrieving value for ${param}`);
+  if (ml_scorm.lmsConnected) {
     let value = scorm.get(param);
-    this.DEBUG.LOG(`found value of ${value}`);
+    ml_scorm.DEBUG.LOG(`found value of ${value}`);
     return value;
   } else {
-    this.DEBUG.WARN('LMS NOT CONNECTED');
+    ml_scorm.DEBUG.WARN('LMS NOT CONNECTED');
   }
 }
 
 
 // Retrieves bookmark location from course
 ml_scorm.getBookmark = function() {
-  return this.getValue('cmi.core.lesson_location');
+  return ml_scorm.getValue('cmi.core.lesson_location');
 }
 
 // Sets bookmark of location in course
 ml_scorm.setBookmark = function(location) {
-  this.setValue('cmi.core.lesson_location', location);
+  ml_scorm.setValue('cmi.core.lesson_location', location);
 }
+
+
 
 // This is a helper object for the Objective class, but will probably be
 // needed in other places as well. No functionality at the moment.
