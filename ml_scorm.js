@@ -257,6 +257,7 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
   addObjective(objectiveId) {
     let newObjective = new ml_scorm.Objective(this.objectives.length, objectiveId);
     this.objectives.push(newObjective);
+    return newObjective;
   }
 
   // Convienence function to add a list of objectives all at once
