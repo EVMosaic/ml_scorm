@@ -260,6 +260,12 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
     return newObjective;
   }
 
+  // Useful for when the total score is a combined total of all sub objectives.
+  // sums all existing scores for tracked objectives.
+  calculateTotalScore() {
+    return this.objectives.reduce( (total, obj) => total + obj.score, 0 );
+  }
+
   // Convienence function to add a list of objectives all at once
   // Takes in a list of IDs and creates a new objective for each
   // Will only add list if LMS does not contain any objectives at
@@ -579,6 +585,7 @@ ml_scorm.TrackedInteractions = class TrackedInteractions {
     let newInteraction = new ml_scorm.Interaction(index, config);
     this.interactions.push(newInteraction);
   }
+
 }
 
 ml_scorm.InteractionConfig = class InteractionConfig {
