@@ -104,6 +104,13 @@ ml_scorm.completeSCO = function() {
   ml_scorm.setValue('cmi.core.lesson_status', ml_scorm.STATUS.COMPLETED);
 }
 
+// Called to update SCO status to a specific state
+ml_scorm.updateStatus = function(status) {
+  ml_scorm.setValue('cmi.core.lesson_status', status);
+}
+
+// Called to score a SCO. Assumes min value of zero, max of 100, and normallized
+// score between the two.
 ml_scorm.scoreSCO = function(score) {
   ml_scorm.setValue('cmi.core.score.raw', score);
 }
