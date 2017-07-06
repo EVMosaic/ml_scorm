@@ -1,6 +1,6 @@
 # a simple tool to generate some formatted text based on file structure
 from os import walk
-from os.path import isfile, dirname, realpath
+from os.path import isfile, dirname, realpath, join
 
 class MosaicXmlGenerator(object):
     def __init__(self, current_directory):
@@ -18,10 +18,10 @@ class MosaicXmlGenerator(object):
                     self.print_file_row(dirpath, filename)
 
     def print_file_row(self, dirpath, filename):
-        print('<file href="' + self.trim_file_path(dirpath) + '/' + filename + '" />')
+        print('      <file href="' + self.trim_file_path( join(dirpath, filename) + '" />') )
 
     def trim_file_path(self, dirpath):
-        return dirpath[len(self.current_directory):].replace('\\', '/')
+        return dirpath[len(self.current_directory) + 1:].replace('\\', '/')
 
 if __name__ == '__main__':
     generator = MosaicXmlGenerator(dirname(realpath(__file__)))

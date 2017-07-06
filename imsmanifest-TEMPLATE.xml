@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="no" ?>
-<manifest identifier="com.scorm.golfsamples.contentpackaging.singlesco.12" version="1"
+<manifest identifier="com.mosaiclearning.temporaryworkplatforms" version="1"
          xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
          xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -12,17 +12,17 @@
     <schemaversion>1.2</schemaversion>
   </metadata>
 
-  <organizations default="default_org">
+  <organizations default="default_org" identifierref="resource_1">
     <organization identifier="default_org">
-      <title>Modulue 1</title>
-      <item identifier="item_1" identifierref="resource_1">
+      <title>Module 1</title>
+      <item identifier="item_1" >
         <title>Lesson 1</title>
       </item>
     </organization>
   </organizations>
 
   <resources>
-    <resource identifier="resource_1" type="webcontent" adlcp:scormtype="sco" href="/index.html">
+    <resource identifier="resource_1" type="webcontent" adlcp:scormtype="sco" href="index.html">
 
     </resource>
   </resources>
