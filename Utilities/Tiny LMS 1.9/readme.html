@@ -1,0 +1,157 @@
+<html>
+<head>
+<STYLE TYPE="text/css">
+<!--
+p {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+li {  font-family: Arial, Helvetica, sans-serif}
+h4 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+h2 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+}
+h1 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 24px;
+}
+td {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+-->
+</STYLE><title>TinyLMS- Read Me</title> <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+</head>
+
+<body bgcolor="#FFFFFF">
+<table border=0 width="100%" >
+  <tr>
+    <td valign=TOP><font size="-1" face="Arial, Helvetica, sans-serif">&copy; Werner
+        Randelshofer</font></td>
+    <td align=CENTER>
+      <h1> <FONT FACE="Arial, Helvetica, sans-serif">TinyLMS</FONT></h1>
+    </td>
+    <td align=RIGHT valign=TOP><P><font size="-1" face="Arial, Helvetica, sans-serif"><a href="http://www.randelshofer.ch">www.randelshofer.ch</a></font></P>
+    </td>
+  </tr>
+</table>
+<table border cellspacing=0 cellpadding=2 width="100%" >
+  <tr bgcolor="#EEEEFF">
+    <td align=CENTER><font size="-1"><font face="Arial, Helvetica, sans-serif">Readme&nbsp;&nbsp;<a href="changes.html">Changes</a>&nbsp;&nbsp;<a href="license.html">License</a></font></font></td>
+  </tr>
+</table>
+<div align="center">
+  <p>&nbsp;</p>
+</div>
+<div align="center"><table width="500" border="0" align="center"> <tr> <td width="500" valign="top"> 
+<h1 align="center">Readme </h1>
+<h2>Contents</h2><p><a href="#Introduction">Introduction</a><br> 
+<a href="#SCORM">What is SCORM?</a><br> 
+<a href="#Issues">Known Issues</a><br> 
+<a href="#Requirements">System Requirements</a><br> <a href="#Installation">Installation<br> 
+</a><a href="#Copyright">Copyright</a></p><hr> <h2><a name="Introduction"></a>Introduction<br> 
+</h2><p>TinyLMS is a lightweight learning management system for SCORM compliant learning
+  content.</p>
+<p>Features:</p>
+<ul>
+  <li>TinyLMS is (almost) conformant to SCORM 1.2 at conformance level &quot;LMS-RTE1&quot;.</li>
+  <li>Tutorials generated with TinyLMS can be used online and offline.</li>
+  <li>Runtime requirements for tutorials are low: HTML, JavaScript and Cookies
+    are all that is needed.</li>
+  <li>TinyLMS supports layered organization of learning content in addition to
+    the hierarchical organization of learning content specified by SCORM.</li>
+  <li>TinyLMS can be used as a SCORM-to-SCORM adapter. This
+    can be used to aggregate fine grained learning content into one big SCO.</li>
+</ul>
+<hr> <h2><a name="SCORM" id="SCORM"></a>What is SCORM?</h2>
+<p>The Sharable Content Object Reference Model (SCORM) defines a Web-based learning &quot;Content
+  Aggregation Model&quot; and &quot;Run-time Environment&quot; for learning objects.
+  At its simplest, it is a model that references a set of interrelated technical
+  specifications and guidelines designed to meet the following high-level requirements
+  for Web-based learning content:</p>
+<ul>
+  <li><strong> Content reusability:</strong> SCORM tutorials are aggregations
+    of &quot;Sharable Content Object's&quot; (SCO). A SCO is a single web page
+    or a sequence of web pages containing learning content. SCORM enables the
+    integration of existing SCO's into new tutorials.</li>
+  <li><strong>Accessibility:</strong> SCORM tutorials are accessible over the
+    web. To run a tutorial the end user needs to have a Browser supporting ECMAScript
+    1.0 (aka JavaScript 1.0) and frames. Information about the tutorial is available
+    through metadata. All metadate is stored in XML documents. </li>
+  <li><strong>Durability:</strong> SCORM is based on open Internet standards
+    like HTML, ECMAScript and HTML.</li>
+  <li> <strong>Interoperability:</strong> Interoperability is specified for the
+    metadata, and for the API of SCO's and the runtime environment.</li>
+</ul>
+<p>SCORM was developed by the Advanced Distributed Learning Initiative (ADL).
+  See <a href="http://www.adlnet.org">www.adlnet.org</a> for more information
+  about SCORM.</p>
+<hr> <h2><a name="Issues"></a>Known Issues</h2>
+<p>TinyLMS does not pass the SCORM RTE-1 self-test because of its <em>limited
+        persistence capabilities. </em>During a user session, TinyLMS uses an in-memory
+        database for all data entries. Long term persistence is achieved using
+        Cookies. Unfortunately Cookies do not provide enough space to store all
+        data entries.<br>
+  If a course consists of exactly one SCO, TinyLMS is capable of storing the <code>cmi.core.lesson_status</code> and
+  the <code>cmi.core.lesson_location</code>. If a course contains  more than
+  one SCO, TinyLMS stores the <code>cmi.core.lesson_status</code> only.</p>
+<hr> <h2><a name="Requirements"></a>System 
+requirements</h2>
+<p>TinyLMS consists of two parts: the course builder and the runtime environment.</p>
+<p>To run the course builder you need to have <strong>Java 1.5</strong> (or above) on your computer.<br>
+  The course builder is known to run on Mac OS X  and on Windows. It is
+  supposed to run on many other operating systems as well. Including Linux, Solaris,
+  AIX and OS/2.</p>
+<p>To runtime environment needs a browser supporting HTML, JavaScript and Cookies.
+  There is no need for a server software. Thus tutorials generated with TinyLMS
+  can be sent as a Mail attachmen, or can be run from CD ROM or
+  any other read only media.  </p>
+<p>The runtime environment is known to run with <strong>recent versions</strong> of Internet Explorer and Safari on Mac OS X and on Windows.
+    The run time environment is supposed to run with many different browsers
+    and on many other operating systems as well.</p>
+<hr> <h2><a name="Installation"></a>Installation</h2>
+<p><strong>Mac OS X 10.3 (Panther)</strong></p>
+<ol>
+  <li><strong>Download</strong> your platform edition of TinyLMS.<br>
+  Download from <a href="http://www.randelshofer.ch/tinylms/download.html">http://www.randelshofer.ch/tinylms/download.html</a> </li>
+  <li><strong>There is no step No 2 :)</strong>. TinyLMS  unpacks automatically
+    and is ready for immediate use. If you like, you can move it into your
+    Application folder.</li>
+  </ol>
+<p><strong>All Other Operating Systems</strong></p>
+<ol>
+  <li> <strong>Install</strong> a recent version of Java on your computer.<br>
+    Download
+    from    <a href="http://www.java.com">http://www.java.com</a></li>
+  <li><strong>Download</strong> your platform edition of TinyLMS.<br>
+      Download from    <a href="http://www.randelshofer.ch/tinylms">http://www.randelshofer.ch/tinylms</a> </li>
+  <li><strong>Unzip </strong> the ZIP-file and then double click TinyLMS.jar
+    to run the application.</li>
+  </ol>
+<hr> <h3><a name="Copyright"></a>Copyright</h3>
+<p> 
+TinyLMS Copyright (C) 2003-2008<br>
+ Werner Randelshofer, Hausmatt 10, CH-6405 
+Immensee, Switzerland<br> All Rights Reserved<br> <a href="mailto:werner.randelshofer@bluewin.ch">werner.randelshofer@bluewin.ch</a></p>
+<h4>Contributors:</h4>
+<ul>
+  <li>Sasa Divjak, Slovenian language version and Slovenian course builder interface</li>
+  <li>Jean Pierre Vandecandelaere, Dutch language version and Dutch course
+    builder interface    </li>
+  </ul>
+<h4>Third-party libraries:</h4>
+<ul>
+  <li>Quaqua Look and Feel <a href="http://www.randelshofer.ch/quaqua">http://www.randelshofer.ch/quaqua</a></li>
+  <li>TagSoup <a href="http://home.ccil.org/~cowan/XML/tagsoup/">http://home.ccil.org/~cowan/XML/tagsoup/</a></li>
+  <li> Flying Saucer XHTMLRenderer <a href="https://xhtmlrenderer.dev.java.net/">https://xhtmlrenderer.dev.java.net/</a></li>
+  <li>iText PDF Renderer <a href="http://www.lowagie.com/iText/">http://www.lowagie.com/iText/</a></li>
+  <li>Saxon XML Library <a href="http://saxon.sourceforge.net/">http://saxon.sourceforge.net/</a></li>
+</ul></td>
+</tr> 
+</table></div><p></p><p></p><p></p><p></p><h1>&nbsp;</h1>
+</body>
+</html>
