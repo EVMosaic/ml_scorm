@@ -248,6 +248,7 @@ ml_scorm.Objective = class Objective {
 // Container class to hold all objectives for a SCO.
 // Contains methods for adding new objectives one at a time or in bulk
 // Should this be a class?? Can we make this just an object?
+// TODO populate from LMS if values present
 ml_scorm.TrackedObjectives = class TrackedObjectives {
   constructor() {
     this.objectives = [];
