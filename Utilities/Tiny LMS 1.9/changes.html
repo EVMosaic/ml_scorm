@@ -1,0 +1,253 @@
+<html>
+<head>
+<title>TinyLMS - Changes</title> <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<STYLE TYPE="text/css">
+<!--
+p {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+li {  font-family: Arial, Helvetica, sans-serif}
+h4 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+h3 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+h2 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+}
+h1 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 24px;
+}
+td {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+-->
+</STYLE>
+</head>
+
+<body bgcolor="#FFFFFF">
+<table border=0 width="100%" > <tr> <td valign=TOP><font size="-1" face="Arial, Helvetica, sans-serif">&copy; 
+Werner Randelshofer</font></td><td align=CENTER> <h1> <FONT FACE="Arial, Helvetica, sans-serif">TinyLMS</FONT></h1></td><td align=RIGHT valign=TOP><P><font size="-1" face="Arial, Helvetica, sans-serif"><a href="http://www.randelshofer.ch">www.randelshofer.ch</a></font></P></td></tr> </table><table border cellspacing=0 cellpadding=2 width="100%" > 
+<tr bgcolor="#EEEEFF"> <td align=CENTER><font size="-1"><a href="readme.html"><font face="Arial, Helvetica, sans-serif">Readme</font></a><font face="Arial, Helvetica, sans-serif">&nbsp;&nbsp;Changes&nbsp;&nbsp;<a href="license.html">License</a></font></font></td></tr> 
+</table><div align="center">
+  <p>&nbsp;</p>
+  <table width="500" border="0" align="center"> <tr valign="top" align="left"> 
+<td width="500" valign="top"> <h1 align="center"><font face="Arial, Helvetica, sans-serif">Changes 
+</font></h1>
+<h3> Version 1.8.2<br>
+2009-09-30</h3>
+<ul>
+  <li>Quiz mode did not work with IE.</li>
+  <li>Moved quiz mode out of TOC into tree actions.</li>
+  <li>Removed &quot;expand all&quot; and &quot;collapse all&quot; tree actions.</li>
+</ul>
+<h3>Version 1.8<br>
+  2009-09-09</h3>
+<ul>
+  <li>Added support for &quot;Quiz&quot; structure.</li>
+</ul>
+<h3>Version 1.7.1<br>
+  2008-12-18</h3>
+<ul>
+  <li>TinyLMS 1.7 did not work on a case-sensitive web-server.</li>
+</ul>
+<h3>Version 1.7<br>
+  2008-12-16</h3>
+<ul>
+  <li>Rewrote Java-Script code.</li>
+  <li>Updated to latest revision of xhtmlrenderer.</li>
+  <li>Fixed wrong encoded base URL's when printing a course as a PDF-document, which caused xhtmlrenderer to miss CSS files.</li>
+</ul>
+<h3>Version 1.6.3<br>
+  2008-03-20</h3>
+<ul>
+  <li>The &quot;Next&quot; and &quot;Previous&quot; buttons can now be hidden.</li>
+</ul>
+<h3></h3>
+<h3>Version 1.6.2<br>
+  2008-03-18</h3>
+<ul>
+  <li>Browser support: Fixed rendering of table of contents on IE 6.</li>
+  </ul>
+<h3>Version 1.6.1<br>
+2008-01-24</h3>
+<ul>
+  <li>PDF Export: SCORM tutorials can now be printed as PDF documents.</li>
+  <li>imsmanifest.xml parsing: TinyLMS requires now that XML-Id's are well formed.</li>
+  </ul>
+<h3>Version 1.5.1<br>
+2006-10-13</h3>
+<ul>
+  <li>imsmanifest.xml parsing: Continued work on XML namespaces
+    aware parser.</li>
+  </ul>
+<h3>Version 1.5<br>
+    2006-10-12</h3>
+<ul>
+  <li>imsmanifest.xml parsing: If the &quot;adlcp:scormtype&quot; of a &quot;resource&quot; element
+    is missing, TinyLMS will issue a warning and assume &quot;sco&quot;, instead of refusing
+    to open a SCORM content package.</li>
+  <li>imsmanifest.xml parsing: Most parsing is done now with an XML namespaces
+    aware parser.</li>
+</ul>
+<h3>Version 1.4.9<br>
+    2006-09-06</h3>
+<ul>
+  <li>Removed scrollbar from TOC when running with MS IE, due to
+    issues with CSS box model support in this browser.</li>
+  </ul>
+<h3></h3>
+<h3>Version 1.4.8<br>
+    2006-07-29</h3>
+<ul>
+  <li>Fixed Dutch translations.</li>
+  <li>Worked around loss of CMI data when opening a SCO from the index page.</li>
+  <li>The title and buttons in the tree TOC do not scroll away anymore.</li>
+</ul>
+<h3></h3>
+<h3>Version 1.4.7<br>
+    2006-07-11</h3>
+<ul>
+  <li>Fixed Slovenian and Dutch translations.</li>
+  <li>The tree TOC displays now navigation buttons if the navigation bar is switched
+    off.</li>
+</ul>
+<h3></h3>
+<h3>Version 1.4.6<br>
+    2006-06-26</h3>
+<ul>
+  <li>Fixed Slovenian translation.</li>
+  <li>Translated course builder interface into Dutch.</li>
+</ul>
+<h3></h3>
+<h3>Version 1.4.5<br>
+    2006-06-13</h3>
+<ul>
+  <li>Translated runtime interface into Dutch.</li>
+  <li>Translated course builder interface into Slovenian and finished translation
+    of runtime interface.</li>
+</ul>
+<h3>Version 1.4.4<br>
+    2006-06-01</h3>
+<ul>
+  <li>TOC was sometimes empty after login.</li>
+  <li>Unicode text in TOC needs to be encoded with HTML entities.</li>
+</ul>
+<h3></h3>
+<h3>Version 1.4.3<br>
+    2006-05-26</h3>
+<ul>
+  <li>Translated course builder interface into German.</li>
+  </ul>
+<h3></h3>
+<h3>Version 1.4.2<br>
+    2006-05-25</h3>
+<ul>
+  <li>TinyLMS course builder only worked on Mac OS X.</li>
+  <li>Fixed issues with Internet Explorer.</li>
+</ul>
+<h3></h3>
+<h3>Version 1.4.1<br>
+    2005-06-24</h3>
+<ul>
+  <li>Translated runtime interface into Slowenian language  (not finished
+    yet).</li>
+  <li>Moved &quot;Previous&quot; and &quot;Next&quot; buttons into navigation bar to the bottom right.</li>
+  <li>Fixed issues with Apple Safari browser.</li>
+</ul>
+<h3>Version 1.4<br>
+    2005-06-08</h3>
+<ul>
+  <li>TinyLMS can be run as a command line tool.</li>
+  <li>Updated to Quaqua Look and Feel 3.2.1.</li>
+</ul><h3><font face="Arial, Helvetica, sans-serif">Version
+    1.3.2<BR>
+    2004-06-20</font></h3>
+<UL>
+  <LI>TinyLMS did not work for courses consisting of a single SCO only.</LI>
+  <LI>Log window uses now a stylesheet.</LI>
+  <LI>Expanding and collapsing of nodes in the tree TOC did not work on some
+    browsers.</LI>
+  <LI>Hardcoded path to course directory replaced by an instance variable in
+    file lmsapi.js.</LI>
+</UL>
+<p>&nbsp;</p>
+<h3><font face="Arial, Helvetica, sans-serif">Version
+  1.3.1<BR>
+  2004-06-14</font></h3>
+<UL>
+  <LI>Logout from a tutorial works now.</LI>
+  <LI>When the 'menu' page is shown, no item in the table of contents is selected
+    anymore.</LI>
+</UL>
+<p>&nbsp;</p>
+<h3><font face="Arial, Helvetica, sans-serif">Version
+  1.3<BR>
+  2004-06-14</font></h3>
+<UL>
+  <LI>Debugging: Log messages are now written into a log window. No
+    more alerts!<br>
+    Many thanks to Kent Ogletree for supplying the code for this.<font face="Arial, Helvetica, sans-serif"></font></LI>
+  <LI>Generated courses now work inside parent framesets.</LI>
+  <LI>Generated courses that concist of a single SCO had illegal framesets.</LI>
+  <LI>TinyLMS computes the cmi.core.total_time now correctly.</LI>
+  <LI>Persistency bug introduced with version 1.2.2 fixed.</LI>
+</UL>
+<p>&nbsp;</p>
+<h3><font face="Arial, Helvetica, sans-serif">Version
+  1.2.2<BR>
+  2004-04-16</font></h3>
+<UL>
+  <LI>SCORM-to-SCORM adapter feature added.</LI>
+  <LI>Option &quot;Always display Table of Contents&quot; added.</LI>
+  <LI><font face="Arial, Helvetica, sans-serif">Links from the statistics view
+        did not work.</font></LI>
+</UL>
+<p>&nbsp;</p>
+<h3><font face="Arial, Helvetica, sans-serif">Version
+  1.1.8<BR>
+  2003-12-01</font></h3>
+<UL>
+  <LI><font face="Arial, Helvetica, sans-serif">This version fixes a bug which
+      caused the navigational elements of TinyLMS to freeze, when an SCO did
+      not call
+      LMSFinish when it was removed from the view.</font></LI>
+  </UL>
+<p>&nbsp;</p>
+<h3><font face="Arial, Helvetica, sans-serif">Version
+  1.1.7<BR>
+  2003-11-06</font></h3>
+<UL>
+  <LI><font face="Arial, Helvetica, sans-serif">Tutorials can now be generated
+      in the English language as well<br>
+      (prior versions supported German only).</font></LI>
+  <LI><font face="Arial, Helvetica, sans-serif">The course builder provides now
+      much more options for customizing generated tutorials.</font></LI>
+  <LI>Improved the validation of imported learning content.</LI>
+  <LI><font face="Arial, Helvetica, sans-serif">Lots of bugs fixed.</font></LI>
+</UL>
+<p>&nbsp;</p><h3><font face="Arial, Helvetica, sans-serif">Version
+  1.0.2<BR>
+  2003-06-30</font></h3>
+<UL>
+  <LI><font face="Arial, Helvetica, sans-serif"> Bug-Button added.</font></LI>
+</UL>
+<P>&nbsp;</P>
+<h3><font face="Arial, Helvetica, sans-serif">Version 
+  1.0<BR>
+  2003-06-22</font></h3>
+<UL><LI><font face="Arial, Helvetica, sans-serif"> 
+First release.</font></LI></UL><P>&nbsp;</P><P><font face="Arial, Helvetica, sans-serif">TinyLMS<BR>
+Copyright 
+2003-2006&copy; Werner Randelshofer </font><BR>
+All Rights Reserved</P></td>
+</tr> </table></div><p></p><p></p><p></p><p></p><h1>&nbsp;</h1>
+</body>
+</html>
