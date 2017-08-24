@@ -187,13 +187,17 @@ ml_scorm.Objective = class Objective {
     this._id = id;
     this._status = ml_scorm.STATUS.NOT_ATTEMPTED;
     this._score = new ml_scorm.Score();
-
-    ml_scorm.setValue(`cmi.objectives.${index}.id`, id);
+    this.group = group;
+    console.log('creating new objective: ' + this._id);
+    ml_scorm.setValue(`cmi.objectives.${this.index}.id`, this._id);
+    ml_scorm.setValue(`cmi.objectives.${this.index}.score.min`, this._score.min);
+    ml_scorm.setValue(`cmi.objectives.${this.index}.score.max`, this._score.max);
   }
 
   // Convenience function for completing an objective
   complete() {
     this._status = ml_scorm.STATUS.COMPLETED
+    console.log('completing objective: ' + this._id);
     ml_scorm.setValue(`cmi.objectives.${this.index}.status`, this._status);
   }
 
@@ -235,12 +239,33 @@ ml_scorm.Objective = class Objective {
     return this._score.raw;
   }
 
+  set maxScore(max) {
+    this._score.max = max;
+    ml_scorm.setValue(`cmi.objectives.${this.index}.score.max`, max);
+  }
+
+  get maxScore() {
+    return this._score.max;
+  }
+
+  set minScore(min) {
+    this._score.min = min;
+    ml_scorm.setValue(`cmi.objectives.${this.index}.score.min`, min);
+  }
+
+  get minScore() {
+    return this._score.min;
+  }
+
+
   // Changes will be updated to the LMS as they are made to the
   // object. This method is probably redundant, but provides a way
   // to ensure that all values are saved on the object.
   save() {
     scorm.set(`cmi.objectives.${this.index}.id`, this._id);
-    scorm.set(`cmi.objectives.${this.index}.score`, this._score.raw);
+    scorm.set(`cmi.objectives.${this.index}.score.raw`, this._score.raw);
+    scorm.set(`cmi.objectives.${this.index}.score.min`, this._score.min);
+    scorm.set(`cmi.objectives.${this.index}.score.max`, this._score.max);
     scorm.set(`cmi.objectives.${this.index}.status`, this._status);
     scorm.save();
   }
