@@ -116,9 +116,16 @@ ml_scorm.scoreSCO = function(score) {
   ml_scorm.setValue('cmi.core.score.raw', score);
 }
 
+// Set max SCO score. This feels wrong. Should probably give ml_scorm a Score Object
+// and add accessors. Same with above. (also it just looks ugly as a function name)
+ml_scorm.setMaxSCOScore = function(score) {
+  ml_scorm.setValue('cmi.core.score.max', score);
+}
+
 // Convienience wrapper for setting SCORM variables. Auto saves on call.
 // NOTE if setting multiple values at once use scorm.set() directly and
 // save after setting the final value to avoid slow communication with LMS
+// TODO actually might ignore the previous note and have a flag to enable saving not sure if should default to true or false though. False for speed. True for convienence.
 ml_scorm.setValue = function(param, value) {
   if (ml_scorm.lmsConnected) {
     ml_scorm.DEBUG.LOG(`setting ${param} to ${value}`);
