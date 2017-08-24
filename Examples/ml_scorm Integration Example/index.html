@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>ETA SCORM Demo</title>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Merriweather:300i,400|Squada+One" rel="stylesheet">
+  <script src="SCORM_API_wrapper.js"></script>
+  <script src="ml_scorm.js"></script>
+<body>
+  <div class="quiz" id="quiz1">
+    <h1>Quiz 1</h1>
+    <div id="results1" class="results">
+    Your score is: <br>
+    <span id="score_recieved1" class="core_report">0/50</span><br> Bonus:<br><span id="bonus1" class="bonus_report">0/5</span>
+  </div>
+    <ul>
+      <li>
+        <div class="question">
+          <div class="number">
+            <div>1</div>
+          </div>
+          <div class="text">
+            What color is an orange?
+          </div>
+          <input class="answer" placeholder="orange"></input>
+          <div class="points">
+            5 points
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="question">
+          <div class="number">
+            <div>2</div>
+          </div>
+          <div class="text">
+            How many cupcakes in a dozen?
+          </div>
+          <input class="answer" placeholder="12"></input>
+          <div class="points">
+            10 points
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="question">
+          <div class="number">
+            <div>3</div>
+          </div>
+          <div class="text">
+            The cow says?
+          </div>
+          <input class="answer" placeholder="moo"></input>
+          <div class="points">
+            15 points
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="question">
+          <div class="number">
+            <div>4</div>
+          </div>
+          <div class="text">
+            What does Jon Snow know?
+          </div>
+          <input class="answer" placeholder="nothing"></input>
+          <div class="points">
+            20 points
+          </div>
+        </div>
+      </li>
+    </ul>
+    <div class="buttons_stars" id="Bonus 1">
+        <div class="bonus">= BONUS =</div>
+        <div class="star locked"></div>
+        <div class="star locked"></div>
+        <div class="star locked"></div>
+        <div class="star locked"></div>
+        <div class="star locked"></div>
+        <div class="bonus">= BONUS =</div>
+        <div id="grade1" class="button">Grade</div>
+        <div id="reset1" class="button reset">Reset</div>
+    </div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <h1>Quiz 2</h1>
+    <div id="results2" class="results">
+      Your score is: <br>
+      <span id="score_recieved2" class="core_report">0/50</span><br> Bonus:<br><span id="bonus2" class="bonus_report">0/5</span>
+    </div>
+    <ul>
+      <li>
+        <div class="question">
+          <div class="number">
+            <div>1</div>
+          </div>
+          <div class="text">
+            Who makes the iPhone?
+          </div>
+          <input class="answer" placeholder="apple"></input>
+          <div class="points">
+            5 points
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="question">
+          <div class="number">
+            <div>2</div>
+          </div>
+          <div class="text">
+            How many pennies in a dollar?
+          </div>
+          <input class="answer" placeholder="100"></input>
+          <div class="points">
+            10 points
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="question">
+          <div class="number">
+            <div>3</div>
+          </div>
+          <div class="text">
+            Frozen water is called?
+          </div>
+          <input class="answer" placeholder="ice"></input>
+          <div class="points">
+            15 points
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="question">
+          <div class="number">
+            <div>4</div>
+          </div>
+          <div class="text">
+            Bacon is made from
+          </div>
+          <input class="answer" placeholder="pigs"></input>
+          <div class="points">
+            20 points
+          </div>
+        </div>
+      </li>
+    </ul>
+    <div class="buttons_stars" id="Bonus 2">
+      <div class="bonus">= BONUS =</div>
+      <div class="star locked"></div>
+      <div class="star locked"></div>
+      <div class="star locked"></div>
+      <div class="star locked"></div>
+      <div class="star locked"></div>
+      <div class="bonus">= BONUS =</div>
+      <div id="grade2" class="button">Grade</div>
+      <div id="reset2" class="button reset">Reset</div>
+    </div>
+  </div>
+  <button class="end_button" id="end_button">
+  End Lesson
+  </button>
+  <script src="javascript.js"></script>
+</body>
+</html>

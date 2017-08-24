@@ -1,0 +1,180 @@
+h1 {
+  font-family: 'Squada One';
+  font-size: 80px;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+body {
+   font-family: 'Merriweather', serif;
+   margin: 0;
+   padding: 0;
+}
+
+ul {
+
+  font-size: 25px;
+  list-style: none;
+  padding: 0;
+  margin: 10px;
+}
+
+.question {
+  display: flex;
+  justify-content: space-around;
+  border: black solid 3px;
+  border-radius: 30px;
+  padding: 5px;
+  margin-top: 5px;
+  background: lightsteelblue;
+}
+
+.number {
+  border: solid black 5px;
+  border-radius: 35px;
+  height: 30px;
+  width: 35px;
+  background: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 5px;
+  flex: 0 0 35px;
+}
+
+.text {
+  flex: 2.5 0 15%;
+  padding-left: 20px;
+  align-self: center;
+}
+
+.answer {
+  font-family: 'Merriweather', serif;
+  font-size: 15px;
+  font-style: italic;
+  padding: 0 5px;
+  text-align: center;
+  flex: none;
+  width: 100px;
+  border: solid black 3px;
+  border-radius: 30px;
+
+}
+
+.points {
+  flex: 1 1 100px;
+  text-align: center;
+}
+
+.correct {
+  background: greenyellow;
+}
+
+.incorrect {
+  background: crimson;
+}
+
+.results {
+  margin: 0 auto;
+  background: coral;
+  width: 250px;
+  text-align: center;
+  font-size: 30px;
+  padding: 11px;
+  color: white;
+  border-radius: 50px;
+}
+
+.button {
+  border: solid black 3px;
+  width: 100px;
+  margin: 0 10px;
+  text-align: center;
+  font-size: 30px;
+  border-radius: 30px;
+  padding: 5px;
+  background: cornflowerblue;
+  color: white;
+  cursor: pointer;
+  flex: 1 1 calc(50% - 36px);
+}
+
+.button:hover {
+  background: darkseagreen;
+}
+
+.button:active {
+  background: steelblue;
+}
+
+.reset {
+  background: red;
+  color: white;
+}
+
+.reset:hover {
+  background: pink;
+}
+
+.reset:active {
+  background: darkred;
+}
+
+.star {
+  background-image: url('star_sm.png');
+  background-color: aquamarine;
+  width: 50px;
+  height: 50px;
+  flex: 0 0 50px;
+  margin: 20px 10px;
+  padding: 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: black dotted 3px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  transform: rotate(144deg);
+}
+
+.locked {
+  filter: grayscale(100%);
+  transform: rotate(0deg);
+}
+
+.bonus {
+  font-size: 40px;
+  font-family: 'Squada One';
+  background: teal;
+  padding: 5px 20px;
+  color: white;
+  border-radius: 35px;
+}
+
+.buttons_stars {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.end_button {
+  background-color: black;
+  color: white;
+  font-size: 40px;
+  padding: 15px;
+  margin: 20px auto;
+  display: block;
+  border-radius: 50px;
+  border: solid grey 5px;
+  font-family: 'Merriweather', serif;
+}
+
+.end_button:hover {
+  background-color: grey;
+}
+
+.end_button:active {
+  background-color: slategrey;
+}
