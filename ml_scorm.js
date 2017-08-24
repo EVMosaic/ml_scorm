@@ -95,6 +95,7 @@ ml_scorm.initSCO = function() {
 // Called once a SCO is unloaded. Neccesary to finalize interaction
 // Handles LMSFinish
 ml_scorm.closeSCO = function() {
+  scorm.save();
   scorm.quit();
   ml_scorm.lmsConnected = false;
 }
