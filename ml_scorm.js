@@ -178,7 +178,7 @@ ml_scorm.Score = class Score {
 ml_scorm.Objective = class Objective {
   // Creates a new Objective object and adds it to LMS
   // Index is non editable after creation.
-  constructor(index, id = "[New Objective]") {
+  constructor(index, id = "[New Objective]", group = "default") {
     Object.defineProperty(this, 'index', {
       writable: false,
       configurable: false,
@@ -250,22 +250,33 @@ ml_scorm.Objective = class Objective {
 // Contains methods for adding new objectives one at a time or in bulk
 // Should this be a class?? Can we make this just an object?
 // TODO populate from LMS if values present
+// NOTE changing objectives from an array to an object. Need to update docs to match
 ml_scorm.TrackedObjectives = class TrackedObjectives {
   constructor() {
-    this.objectives = [];
+    this.objectives = {};
   }
 
   // Adds new objective to both the internal tracking and on the LMS
-  addObjective(objectiveId) {
-    let newObjective = new ml_scorm.Objective(this.objectives.length, objectiveId);
-    this.objectives.push(newObjective);
+  addObjective(objectiveId, group = "default") {
+    let index = ml_scorm.getValue('cmi.objectives._count')
+    let newObjective = new ml_scorm.Objective(index, objectiveId, group);
+    this.objectives[objectiveId] = newObjective;
     return newObjective;
   }
 
   // Useful for when the total score is a combined total of all sub objectives.
   // sums all existing scores for tracked objectives.
-  calculateTotalScore() {
-    return this.objectives.reduce( (total, obj) => total + obj.score, 0 );
+  calculateTotalScore(group = "default") {
+
+   let objectives = Object.values(this.objectives);
+
+    return objectives.reduce( (total, obj) => {
+      if (obj.group === group) {
+        return total + obj.score;
+      } else {
+        return total;
+      }
+    }, 0);
   }
 
   // Convienence function to add a list of objectives all at once
