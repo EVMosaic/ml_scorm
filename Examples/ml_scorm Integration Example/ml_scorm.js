@@ -454,9 +454,17 @@ ml_scorm.Interaction = class Interaction {
   // Gets interactions objectives array and logs the current count.
   // Can get rid of log if desired.
   get objectives() {
-    let ccount = ml_scorm.getValue(`cmi.interactions.${this.index}.objectives._count`);
-    ml_scorm.DEBUG.log(`there are currently ${count} interaction objectives`);
+    let count = ml_scorm.getValue(`cmi.interactions.${this.index}.objectives._count`);
+    ml_scorm.DEBUG.LOG(`there are currently ${count} interaction objectives`);
     return this._objectives;
+  }
+
+  set startTime(t) {
+    this._startTime = t;
+  }
+
+  get startTime() {
+    return this.formatTime(this._startTime);
   }
 
   // Sets finishTime and updates latency based on start time.
@@ -470,7 +478,15 @@ ml_scorm.Interaction = class Interaction {
 
   // Returns finish time
   get finishTime() {
-    return this._finishTime;
+    return this.formatTime(this._finishTime);
+  }
+
+  set latency(t) {
+    this._latency = t;
+  }
+
+  get latency() {
+    return this.formatTimespan(this._latency);
   }
 
   // Adds correct response patterns to interaction in sequential order.
@@ -553,8 +569,7 @@ ml_scorm.Interaction = class Interaction {
   // the decimal seconds are optional but can only take two digits.
   // The first two digits on latency (HH) are optional but are currently
   // formatted with padded zeros.
-  formatCurrentTime() {
-    let date = new Date();
+  formatTime(date) {
     return date.toTimeString().slice(0,8);
   }
 
@@ -564,12 +579,11 @@ ml_scorm.Interaction = class Interaction {
   // This will only work reliably for time periods under 24 hours in length;
   // If we need to track times greater than 24 hours between interactions
   // this will need to be rewritten to manipulate t directly
-  formatTime(t) {
-    let date = new Date(t);
+  formatTimespan(date) {
     let hours = String('0000' + date.getUTCHours()).slice(-4);
-    let minutes = date.getUTCMinutes();
-    let seconds = date.getUTCSeconds();
-    let milliseconds = String(date.getUTCMilliseconds()).substring(0,2);
+    let minutes = String('00' + date.getUTCMinutes()).slice(-2);
+    let seconds = String('00' + date.getUTCSeconds()).slice(-2);
+    let milliseconds = String(date.getUTCMilliseconds() + '00').substring(0,2);
     let formattedTime =  `${hours}:${minutes}:${seconds}.${milliseconds}`;
     return formattedTime;
   }
@@ -579,8 +593,8 @@ ml_scorm.Interaction = class Interaction {
   // updated with any other actions that need to happen at start time
   // Consider giving this an argument to accept a function to be executed
   // so that individual interactions can call their own functions.
-  begin() {
-    this._startTime = this.formatCurrentTime();
+  start() {
+    this._startTime = new Date();
   }
 
   // After interaction has been started with begin() use this to complete
@@ -588,12 +602,12 @@ ml_scorm.Interaction = class Interaction {
   // with any other actions that need to happen at completion time.
   // Consider giving this an argument to accept a function to be executed
   // so that individual interactions can call their own functions.
-  complete() {
-    this._finishTime = this.formatCurrentTime();
-    this._latency = this.formatTime(this.startTime - this.finishTime);
+  finish() {
+    this._finishTime = new Date();
+    this._latency = new Date(this._finishTime - this._startTime);
 
-    scorm.set(`cmi.interactions.${this.index}.time`, this._result);
-    scorm.set(`cmi.interactions.${this.index}.latency`, this._latency);
+    scorm.set(`cmi.interactions.${this.index}.time`, this.finishTime);
+    scorm.set(`cmi.interactions.${this.index}.latency`, this.latency);
     scorm.save();
   }
 
