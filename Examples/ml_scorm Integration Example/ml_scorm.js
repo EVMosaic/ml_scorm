@@ -199,7 +199,7 @@ ml_scorm.Objective = class Objective {
     this._status = ml_scorm.STATUS.NOT_ATTEMPTED;
     this._score = new ml_scorm.Score();
     this.group = group;
-    console.log('creating new objective: ' + this._id);
+    ml_scorm.DEBUG.INFO('creating new objective: ' + this._id);
     ml_scorm.setValue(`cmi.objectives.${this.index}.id`, this._id);
     ml_scorm.setValue(`cmi.objectives.${this.index}.score.min`, this._score.min);
     ml_scorm.setValue(`cmi.objectives.${this.index}.score.max`, this._score.max);
