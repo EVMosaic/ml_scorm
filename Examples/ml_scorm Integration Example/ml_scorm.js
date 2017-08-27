@@ -351,9 +351,9 @@ ml_scorm.Interaction = class Interaction {
     // Objectives
     // optional
 
-    this._startTime = "00:00:00.0"
+    this._startTime = ""
 
-    this._finishTime = "00:00:00.0";
+    this._finishTime = "";
     // this is inconsistently documented as both the time interaction
     // was first shown to student, and time interaction was completed
     // im going to use completed for tracking, but if you want to change
@@ -389,18 +389,19 @@ ml_scorm.Interaction = class Interaction {
     // see correct_responses for further details
     // optional
 
-    this._result = RESULT.NEUTRAL;
+    this._result = ml_scorm.RESULT.NEUTRAL;
     // use legal values from RESULT constant or a floating point number
     // optional
 
-    this._latency = "00:00:00.0";
+    this._latency = "";
     // HHHH:MM:SS.SS
     // time from presentation of stimulus to completion of mesurable response
     // ie how long it takes the student to answer the question
     // optional
 
     // takes values and writes initial state to LMS
-    this.initialize()
+    this.save()
+    ml_scorm.DEBUG.INFO('creating new interaction: ' + this._id);
 
   }
 
