@@ -502,7 +502,7 @@ ml_scorm.Interaction = class Interaction {
   // Gets the correct_response array and logs the count
   // Can get rid of log if desired
   get correct_responses() {
-      ml_scorm.DEBUG.log(`there are currently ${ml_scorm.getValue(`cmi.interactions.${this.index}.correct_responses._count`)} correct response patterns`);
+      ml_scorm.DEBUG.LOG(`there are currently ${ml_scorm.getValue(`cmi.interactions.${this.index}.correct_responses._count`)} correct response patterns`);
     return this._correct_responses;
   }
 
@@ -667,7 +667,7 @@ ml_scorm.InteractionConfig = class InteractionConfig {
     this.correct_responses = [];
     this.weighting = 1;
     this.student_response = "";
-    this.relust = "";
+    this.result = "";
     this.latency = "";
   }
 }
