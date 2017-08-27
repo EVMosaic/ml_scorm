@@ -550,17 +550,7 @@ ml_scorm.Interaction = class Interaction {
   // through the begin() and complete() methods.
   // This method is called automatically at creation.
   initialize() {
-    scorm.set(`cmi.interactions.${this.index}.id`, this._id);
-    scorm.set(`cmi.interactions.${this.index}.type`, this._type);
-    for (i=0; i<this._objectives.length; i++) {
-      scorm.set(`cmi.interactions.${this.index}.objectives.$[i}.id`, this._objectives[i].id);
-    }
-    for (i=0; i<this.correct_responses.length; i++) {
-      scorm.set(`cmi.interactions.${this.index}.correct_responses.${i}.pattern`, this._correct_responses[i]);
-    }
-    scorm.set(`cmi.interactions.${this.index}.weighting`, this._weighting);
-    scorm.set(`cmi.interactions.${this.index}.result`, this._result);
-    scorm.save();
+    this.save();
   }
 
   // Helper function to format the current time to an acceptable format for LMS
@@ -619,18 +609,24 @@ ml_scorm.Interaction = class Interaction {
   // updateList or something
   save() {
     scorm.set(`cmi.interactions.${this.index}.id`, this._id);
-    scorm.set(`cmi.interactions.${this.index}.type`, this._type);
-    for (i=0; i<this._objectives.length; i++) {
+    if (this.type)
+      scorm.set(`cmi.interactions.${this.index}.type`, this._type);
+    for (let i=0; i<this._objectives.length; i++) {
       scorm.set(`cmi.interactions.${this.index}.objectives.$[i}.id`, this._objectives[i].id);
     }
-    scorm.set(`cmi.interactions.${this.index}.time`, this._finishTime);
-    for (i=0; i<this.correct_responses.length; i++) {
+    if (this._finishTime)
+      scorm.set(`cmi.interactions.${this.index}.time`, this._finishTime);
+    for (let i=0; i<this.correct_responses.length; i++) {
       scorm.set(`cmi.interactions.${this.index}.correct_responses.${i}.pattern`, this._correct_responses[i]);
     }
     scorm.set(`cmi.interactions.${this.index}.weighting`, this._weighting);
-    scorm.set(`cmi.interactions.${this.index}.student_response`, this._student_response);
-    scorm.set(`cmi.interactions.${this.index}.result`, this._result);
-    scorm.set(`cmi.interactions.${this.index}.latency`, this._latency);
+    if (this._student_response)
+      scorm.set(`cmi.interactions.${this.index}.student_response`, this._student_response);
+    if (this._result)
+      scorm.set(`cmi.interactions.${this.index}.result`, this._result);
+    if (this._latency)
+      scorm.set(`cmi.interactions.${this.index}.latency`, this.latency);
+
     scorm.save();
   }
 }
