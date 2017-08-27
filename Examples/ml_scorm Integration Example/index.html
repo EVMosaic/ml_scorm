@@ -4,7 +4,7 @@
   <title>ETA SCORM Demo</title>
   <meta charset="utf-8"/>
   <link rel="stylesheet" type="text/css" href="style.css">
-  <link href="https://fonts.googleapis.com/css?family=Merriweather:300i,400|Squada+One" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Merriweather:300i,400|Squada+One|Inconsolata" rel="stylesheet">
   <script src="SCORM_API_wrapper.js"></script>
   <script src="ml_scorm.js"></script>
 <body>
@@ -160,6 +160,11 @@
       <div id="grade2" class="button">Grade</div>
       <div id="reset2" class="button reset">Reset</div>
     </div>
+  </div>
+  <div id="timerContainer">
+    <button class="timer_button" id="start_timer" data-interaction="timer1">Start Timer</button>
+    <span id="timer">00:00:00:00</span>
+    <button class="timer_button" id="end_timer" data-interaction="timer1">End Timer</button>
   </div>
   <button class="end_button" id="end_button">
   End Lesson

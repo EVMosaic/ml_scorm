@@ -163,7 +163,7 @@ ul {
   background-color: black;
   color: white;
   font-size: 40px;
-  padding: 15px;
+  padding: 20px;
   margin: 20px auto;
   display: block;
   border-radius: 50px;
@@ -177,4 +177,36 @@ ul {
 
 .end_button:active {
   background-color: slategrey;
+}
+
+#timerContainer {
+  padding: 20px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+  background-color: cornsilk;
+  border: solid 5px lightcoral;
+  border-left-width: 0px;
+  border-right-width: 0px;
+}
+
+.timer_button {
+  color: white;
+  background-color: lightcoral;
+  border-color: lightcoral;
+  font-family: 'Merriweather', serif;
+  border-radius: 40px;
+  border-width: 3px;
+  font-size: 20px;
+}
+
+#timer {
+  color: lightcoral;
+  font-family: 'Inconsolata', monospace;
+  font-size: 40px;
+  padding: 5px
+  border: solid coral 5px;
+  border-radius: 40px;
+  background-color: black;
+  padding: 12px;
 }

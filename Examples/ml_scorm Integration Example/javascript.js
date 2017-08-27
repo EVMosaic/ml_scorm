@@ -14,6 +14,8 @@ let grade1 = document.getElementById('grade1');
 let grade2 = document.getElementById('grade2');
 let resetButton1 = document.getElementById('reset1');
 let resetButton2 = document.getElementById('reset2');
+let startTimerButton = document.getElementById('start_timer');
+let endTimerButton = document.getElementById('end_timer');
 
 // This is a manual end button. It allows debugging of the quit function
 // during development. You may or may not need a manual trigger to complete
@@ -23,10 +25,12 @@ endButton.addEventListener('click', quit);
 
 
 // Create a TrackedObjectives object to allow you to (I shit you not) track objectives
-let objectives = new ml_scorm.TrackedObjectives()
+let objectives = new ml_scorm.TrackedObjectives();
+let interactions = new ml_scorm.TrackedInteractions();
 
 
 // Adding this to track completion and progress. Feels kinda hacky, but this is just a test
+// TODO Hey you big dummy! Objectives already have a status property. Just use that :|
 let completed = {'Quiz 1' : false, 'Quiz 2' : false};
 
 
@@ -49,14 +53,15 @@ function init() {
 
   // Min scores default to 0, adding maxScore allows for scaled scores to be recorded
   // Use maxScore to record the total number of points per objective.
-  objectives.objectives['Quiz 1'].maxScore = 50;
-  objectives.objectives['Quiz 2'].maxScore = 50;
-  objectives.objectives['Bonus 1'].maxScore = 5;
-  objectives.objectives['Bonus 2'].maxScore = 5;
+  objectives.getObjective('Quiz 1').maxScore = 50;
+  objectives.getObjective('Quiz 2').maxScore = 50;
+  objectives.getObjective('Bonus 1').maxScore = 5;
+  objectives.getObjective('Bonus 2').maxScore = 5;
 
   // Set max score for entire SCO.
   // NOTE This syntax may change. Don't get married to it, but use it for now.
   ml_scorm.setMaxSCOScore(100);
+  ml_scorm.setMinSCOScore(0);
 }
 
 
@@ -118,8 +123,8 @@ function gradeQuiz() {
   let bonusId = quiz.getElementsByClassName('bonus')[0].parentElement.id
 
   // Grabs the correct objectives based on above title from our master list.
-  let objective = objectives.objectives[quizId];
-  let bonusObjective = objectives.objectives[bonusId];
+  let objective = objectives.getObjective(quizId);
+  let bonusObjective = objectives.getObjective(bonusId);
 
   // This is some kinda hacky shit. I mark the objectives complete at the begining.
   // If an unanswered question is encountered it is then marked incomplete.
@@ -226,6 +231,41 @@ function toggleStar() {
   this.classList.toggle('locked');
 }
 
+
+let currentTimer;
+let startTime;
+function startTimer() {
+  let iconfig = new ml_scorm.InteractionConfig();
+  iconfig.id = this.dataset.interaction;
+  let interaction = interactions.addInteraction(iconfig);
+  interaction.start();
+  currentTimer = setInterval(timer, 10)
+  startTime = new Date();
+}
+
+function timer() {
+  let display = document.getElementById('timer');
+  let currentTime = new Date() - startTime;
+  let formattedTime = formatTime(new Date(currentTime));
+  display.textContent = formattedTime;
+}
+
+function endTimer() {
+  clearInterval(currentTimer);
+  let interaction = interactions.getInteraction(this.dataset.interaction);
+  interaction.finish();
+}
+
+function formatTime(date) {
+    let hours = String('00' + date.getUTCHours()).slice(-2);
+    let minutes = String('00' + date.getUTCMinutes()).slice(-2);
+    let seconds = String('00' + date.getUTCSeconds()).slice(-2);
+    let milliseconds = String(date.getUTCMilliseconds() + '00').slice(0,2);
+    let formattedTime =  `${hours}:${minutes}:${seconds}:${milliseconds}`;
+    return formattedTime;
+  }
+
+
 // More ES6 spread operations. They're great. I promise.
 let stars = [...document.getElementsByClassName('star')];
 
@@ -235,5 +275,7 @@ grade1.addEventListener('click', gradeQuiz);
 grade2.addEventListener('click', gradeQuiz);
 resetButton1.addEventListener('click', reset);
 resetButton2.addEventListener('click', reset);
+startTimerButton.addEventListener('click', startTimer);
+endTimerButton.addEventListener('click', endTimer);
 
 
