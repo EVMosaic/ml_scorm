@@ -289,22 +289,27 @@ ml_scorm.Objective = class Objective {
 // NOTE changing objectives from an array to an object. Need to update docs to match
 ml_scorm.TrackedObjectives = class TrackedObjectives {
   constructor() {
-    this.objectives = {};
+    this._objectives = {};
   }
 
   // Adds new objective to both the internal tracking and on the LMS
   addObjective(objectiveId, group = "default") {
     let index = ml_scorm.getValue('cmi.objectives._count')
     let newObjective = new ml_scorm.Objective(index, objectiveId, group);
-    this.objectives[objectiveId] = newObjective;
+    this._objectives[objectiveId] = newObjective;
     return newObjective;
+  }
+
+
+  getObjective(id) {
+    return this._objectives[id];
   }
 
   // Useful for when the total score is a combined total of all sub objectives.
   // sums all existing scores for tracked objectives.
   calculateTotalScore(group = "default") {
 
-   let objectives = Object.values(this.objectives);
+   let objectives = Object.values(this._objectives);
 
     return objectives.reduce( (total, obj) => {
       if (obj.group === group) {
@@ -622,7 +627,8 @@ ml_scorm.Interaction = class Interaction {
 // Consider turning into factory method and having interactions array be external
 ml_scorm.TrackedInteractions = class TrackedInteractions {
   constructor() {
-    this.interactions = [];
+    this._interactions = {};
+    this.blankConfig = new ml_scorm.InteractionConfig();
   }
 
   // Creates and adds new interaction to the tracked array.
@@ -630,12 +636,16 @@ ml_scorm.TrackedInteractions = class TrackedInteractions {
   // To update existing ones interact with the objects
   // TODO Need way to manage interactions that have been completed in a previous session
   //      for scoring purposes;
-  addInteraction(config) {
-    index = ml_scorm.getValue('cmi.interactions._count');
+  addInteraction(config = this.blankConfig) {
+    let index = ml_scorm.getValue('cmi.interactions._count');
     let newInteraction = new ml_scorm.Interaction(index, config);
-    this.interactions.push(newInteraction);
+    this._interactions[config.id] = newInteraction;
+    return newInteraction;
   }
 
+  getInteraction(id) {
+    return this._interactions[id];
+  }
 }
 
 ml_scorm.InteractionConfig = class InteractionConfig {
