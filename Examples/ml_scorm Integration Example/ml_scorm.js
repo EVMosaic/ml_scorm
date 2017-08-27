@@ -122,6 +122,10 @@ ml_scorm.setMaxSCOScore = function(score) {
   ml_scorm.setValue('cmi.core.score.max', score);
 }
 
+ml_scorm.setMinSCOScore = function(score) {
+  ml_scorm.setValue('cmi.core.score.min', score);
+}
+
 // Convienience wrapper for setting SCORM variables. Auto saves on call.
 // NOTE if setting multiple values at once use scorm.set() directly and
 // save after setting the final value to avoid slow communication with LMS
