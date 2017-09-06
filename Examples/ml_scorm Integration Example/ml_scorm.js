@@ -323,6 +323,10 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
     }
   }
 
+  // Returns number of currently tracked objectives
+  get length() {
+    return Object.keys(this._objectives).length;
+  }
 
   getObjective(id) {
     return this._objectives[id];
@@ -674,6 +678,11 @@ ml_scorm.TrackedInteractions = class TrackedInteractions {
     let newInteraction = new ml_scorm.Interaction(index, config);
     this._interactions[config.id] = newInteraction;
     return newInteraction;
+  }
+
+  // Returns number of currently tracked interactions
+  get length() {
+    return Object.keys(this._interactions).length;
   }
 
   getInteraction(id) {
