@@ -482,7 +482,7 @@ ml_scorm.Interaction = class Interaction {
   set objectives(newObjectives) {
     this._objectives = newObjectives;
     for (i = 0; i < this.newObjectives.length; i++) {
-      scorm.set(`cmi.interactions.${this.index}.objectives.$[i}.id`, this._objectives[i].id);
+      scorm.set(`cmi.interactions.${this.index}.objectives.${this._objectives.length - 1}.id`, this._objectives[i].id);
     }
     scorm.save();
   }
