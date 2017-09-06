@@ -4,9 +4,9 @@
 // This version has only been tested with SCORM 1.2
 
 // Shortcut access to pipwerks SCORM functionality
-const scorm = pipwerks.SCORM;
+var scorm = pipwerks.SCORM;
 
-const ml_scorm = {}
+var ml_scorm = {}
   // Used to determine if communicatoin is happening with the LMS
   // Not sure if this is neccesarry, pipwerks may handle this internally
 ml_scorm.lmsConnected = false;
