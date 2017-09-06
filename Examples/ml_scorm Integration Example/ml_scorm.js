@@ -495,6 +495,11 @@ ml_scorm.Interaction = class Interaction {
     return this._objectives;
   }
 
+  addObjective(objective) {
+    this._objectives.push(objective);
+    ml_scorm.setValue(`cmi.interactions.${this.index}.objectives.${this._objectives.length - 1}.id`, objective.id);
+  }
+
   set startTime(t) {
     this._startTime = t;
   }
