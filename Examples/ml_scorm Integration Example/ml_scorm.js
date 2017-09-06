@@ -347,6 +347,15 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
     }, 0);
   }
 
+  checkAllCompleted() {
+    let objectives = Object.values(this._objectives);
+
+    return objectives.reduce( (completed, obj) => {
+      return completed && (obj._status === ml_scorm.STATUS.completed)
+    }, true);
+
+  }
+
   // Convienence function to add a list of objectives all at once
   // Takes in a list of IDs and creates a new objective for each
   // Will only add list if LMS does not contain any objectives at
