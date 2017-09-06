@@ -466,7 +466,7 @@ ml_scorm.Interaction = class Interaction {
   // This needs to be a legal value from the INTERACTION const
   set type(newType) {
     this._type = newType;
-    ml_scorm.setValue(`cmi.objectives.${this.index}.type`, newType);
+    ml_scorm.setValue(`cmi.interactions.${this.index}.type`, newType);
   }
 
   // Returns interaction type.
