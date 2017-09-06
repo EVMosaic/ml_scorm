@@ -122,6 +122,10 @@ ml_scorm.setMaxSCOScore = function(score) {
   ml_scorm.setValue('cmi.core.score.max', score);
 }
 
+ml_scorm.setMinSCOScore = function(score) {
+  ml_scorm.setValue('cmi.core.score.min', score);
+}
+
 // Convienience wrapper for setting SCORM variables. Auto saves on call.
 // NOTE if setting multiple values at once use scorm.set() directly and
 // save after setting the final value to avoid slow communication with LMS
@@ -195,7 +199,7 @@ ml_scorm.Objective = class Objective {
     this._status = ml_scorm.STATUS.NOT_ATTEMPTED;
     this._score = new ml_scorm.Score();
     this.group = group;
-    console.log('creating new objective: ' + this._id);
+    ml_scorm.DEBUG.INFO('creating new objective: ' + this._id);
     ml_scorm.setValue(`cmi.objectives.${this.index}.id`, this._id);
     ml_scorm.setValue(`cmi.objectives.${this.index}.score.min`, this._score.min);
     ml_scorm.setValue(`cmi.objectives.${this.index}.score.max`, this._score.max);
@@ -285,22 +289,54 @@ ml_scorm.Objective = class Objective {
 // NOTE changing objectives from an array to an object. Need to update docs to match
 ml_scorm.TrackedObjectives = class TrackedObjectives {
   constructor() {
-    this.objectives = {};
+    this._objectives = {};
+    restoreObjectives();
   }
 
   // Adds new objective to both the internal tracking and on the LMS
   addObjective(objectiveId, group = "default") {
-    let index = ml_scorm.getValue('cmi.objectives._count')
+    let index = ml_scorm.getValue('cmi.objectives._count');
+    let id = objectiveId + '|' + group;
     let newObjective = new ml_scorm.Objective(index, objectiveId, group);
-    this.objectives[objectiveId] = newObjective;
+    this._objectives[objectiveId] = newObjective;
     return newObjective;
+  }
+
+  // If objectives are present repopulates this._objectives with data from LMS
+  restoreObjectives() {
+    let count = ml_scorm.getValue('cmi.objectives._count');
+    for (let i=0; i<count: i++) {
+      let id = ml_scorm.getValue(`cmi.objectives.${i}.id`);
+      let scoreRaw = ml_scorm.getValue(`cmi.objectives.${i}.score.raw`);
+      let scoreMax = ml_scorm.getValue(`cmi.objectives.${i}.score.max`);
+      let scoreMin = ml_scorm.getValue(`cmi.objectives.${i}.score.min`);
+      let status = ml_scorm.getValue(`cmi.objectives.${i}.status`);
+      let group = id.split('|')[1];
+
+      let newObjective = new ml_scorm.Objective(i, id, group);
+
+      newObjective._score.raw = scoreRaw;
+      newObjective._score.max = scoreMax;
+      newObjective._score.min = scoreMin;
+
+      newObjective._status = status;
+    }
+  }
+
+  // Returns number of currently tracked objectives
+  get length() {
+    return Object.keys(this._objectives).length;
+  }
+
+  getObjective(id) {
+    return this._objectives[id];
   }
 
   // Useful for when the total score is a combined total of all sub objectives.
   // sums all existing scores for tracked objectives.
   calculateTotalScore(group = "default") {
 
-   let objectives = Object.values(this.objectives);
+   let objectives = Object.values(this._objectives);
 
     return objectives.reduce( (total, obj) => {
       if (obj.group === group) {
@@ -309,6 +345,15 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
         return total;
       }
     }, 0);
+  }
+
+  checkAllCompleted() {
+    let objectives = Object.values(this._objectives);
+
+    return objectives.reduce( (completed, obj) => {
+      return completed && (obj._status === ml_scorm.STATUS.completed)
+    }, true);
+
   }
 
   // Convienence function to add a list of objectives all at once
@@ -351,9 +396,9 @@ ml_scorm.Interaction = class Interaction {
     // Objectives
     // optional
 
-    this._startTime = "00:00:00.0"
+    this._startTime = ""
 
-    this._finishTime = "00:00:00.0";
+    this._finishTime = "";
     // this is inconsistently documented as both the time interaction
     // was first shown to student, and time interaction was completed
     // im going to use completed for tracking, but if you want to change
@@ -389,18 +434,19 @@ ml_scorm.Interaction = class Interaction {
     // see correct_responses for further details
     // optional
 
-    this._result = RESULT.NEUTRAL;
+    this._result = ml_scorm.RESULT.NEUTRAL;
     // use legal values from RESULT constant or a floating point number
     // optional
 
-    this._latency = "00:00:00.0";
+    this._latency = "";
     // HHHH:MM:SS.SS
     // time from presentation of stimulus to completion of mesurable response
     // ie how long it takes the student to answer the question
     // optional
 
     // takes values and writes initial state to LMS
-    this.initialize()
+    this.save()
+    ml_scorm.DEBUG.INFO('creating new interaction: ' + this._id);
 
   }
 
@@ -420,7 +466,7 @@ ml_scorm.Interaction = class Interaction {
   // This needs to be a legal value from the INTERACTION const
   set type(newType) {
     this._type = newType;
-    ml_scorm.setValue(`cmi.objectives.${this.index}.type`, newType);
+    ml_scorm.setValue(`cmi.interactions.${this.index}.type`, newType);
   }
 
   // Returns interaction type.
@@ -436,7 +482,7 @@ ml_scorm.Interaction = class Interaction {
   set objectives(newObjectives) {
     this._objectives = newObjectives;
     for (i = 0; i < this.newObjectives.length; i++) {
-      scorm.set(`cmi.interactions.${this.index}.objectives.$[i}.id`, this._objectives[i].id);
+      scorm.set(`cmi.interactions.${this.index}.objectives.${this._objectives.length - 1}.id`, this._objectives[i].id);
     }
     scorm.save();
   }
@@ -444,9 +490,22 @@ ml_scorm.Interaction = class Interaction {
   // Gets interactions objectives array and logs the current count.
   // Can get rid of log if desired.
   get objectives() {
-    let ccount = ml_scorm.getValue(`cmi.interactions.${this.index}.objectives._count`);
-    ml_scorm.DEBUG.log(`there are currently ${count} interaction objectives`);
+    let count = ml_scorm.getValue(`cmi.interactions.${this.index}.objectives._count`);
+    ml_scorm.DEBUG.LOG(`there are currently ${count} interaction objectives`);
     return this._objectives;
+  }
+
+  addObjective(objective) {
+    this._objectives.push(objective);
+    ml_scorm.setValue(`cmi.interactions.${this.index}.objectives.${this._objectives.length - 1}.id`, objective.id);
+  }
+
+  set startTime(t) {
+    this._startTime = t;
+  }
+
+  get startTime() {
+    return this.formatTime(this._startTime);
   }
 
   // Sets finishTime and updates latency based on start time.
@@ -460,7 +519,15 @@ ml_scorm.Interaction = class Interaction {
 
   // Returns finish time
   get finishTime() {
-    return this._finishTime;
+    return this.formatTime(this._finishTime);
+  }
+
+  set latency(t) {
+    this._latency = t;
+  }
+
+  get latency() {
+    return this.formatTimespan(this._latency);
   }
 
   // Adds correct response patterns to interaction in sequential order.
@@ -476,7 +543,7 @@ ml_scorm.Interaction = class Interaction {
   // Gets the correct_response array and logs the count
   // Can get rid of log if desired
   get correct_responses() {
-      ml_scorm.DEBUG.log(`there are currently ${ml_scorm.getValue(`cmi.interactions.${this.index}.correct_responses._count`)} correct response patterns`);
+      ml_scorm.DEBUG.LOG(`there are currently ${ml_scorm.getValue(`cmi.interactions.${this.index}.correct_responses._count`)} correct response patterns`);
     return this._correct_responses;
   }
 
@@ -524,17 +591,7 @@ ml_scorm.Interaction = class Interaction {
   // through the begin() and complete() methods.
   // This method is called automatically at creation.
   initialize() {
-    scorm.set(`cmi.interactions.${this.index}.id`, this._id);
-    scorm.set(`cmi.interactions.${this.index}.type`, this._type);
-    for (i=0; i<this._objectives.length; i++) {
-      scorm.set(`cmi.interactions.${this.index}.objectives.$[i}.id`, this._objectives[i].id);
-    }
-    for (i=0; i<this.correct_responses.length; i++) {
-      scorm.set(`cmi.interactions.${this.index}.correct_responses.${i}.pattern`, this._correct_responses[i]);
-    }
-    scorm.set(`cmi.interactions.${this.index}.weighting`, this._weighting);
-    scorm.set(`cmi.interactions.${this.index}.result`, this._result);
-    scorm.save();
+    this.save();
   }
 
   // Helper function to format the current time to an acceptable format for LMS
@@ -543,8 +600,7 @@ ml_scorm.Interaction = class Interaction {
   // the decimal seconds are optional but can only take two digits.
   // The first two digits on latency (HH) are optional but are currently
   // formatted with padded zeros.
-  formatCurrentTime() {
-    let date = new Date();
+  formatTime(date) {
     return date.toTimeString().slice(0,8);
   }
 
@@ -554,12 +610,11 @@ ml_scorm.Interaction = class Interaction {
   // This will only work reliably for time periods under 24 hours in length;
   // If we need to track times greater than 24 hours between interactions
   // this will need to be rewritten to manipulate t directly
-  formatTime(t) {
-    let date = new Date(t);
+  formatTimespan(date) {
     let hours = String('0000' + date.getUTCHours()).slice(-4);
-    let minutes = date.getUTCMinutes();
-    let seconds = date.getUTCSeconds();
-    let milliseconds = String(date.getUTCMilliseconds()).substring(0,2);
+    let minutes = String('00' + date.getUTCMinutes()).slice(-2);
+    let seconds = String('00' + date.getUTCSeconds()).slice(-2);
+    let milliseconds = String(date.getUTCMilliseconds() + '00').substring(0,2);
     let formattedTime =  `${hours}:${minutes}:${seconds}.${milliseconds}`;
     return formattedTime;
   }
@@ -569,8 +624,8 @@ ml_scorm.Interaction = class Interaction {
   // updated with any other actions that need to happen at start time
   // Consider giving this an argument to accept a function to be executed
   // so that individual interactions can call their own functions.
-  begin() {
-    this._startTime = this.formatCurrentTime();
+  start() {
+    this._startTime = new Date();
   }
 
   // After interaction has been started with begin() use this to complete
@@ -578,12 +633,12 @@ ml_scorm.Interaction = class Interaction {
   // with any other actions that need to happen at completion time.
   // Consider giving this an argument to accept a function to be executed
   // so that individual interactions can call their own functions.
-  complete() {
-    this._finishTime = this.formatCurrentTime();
-    this._latency = this.formatTime(this.startTime - this.finishTime);
+  finish() {
+    this._finishTime = new Date();
+    this._latency = new Date(this._finishTime - this._startTime);
 
-    scorm.set(`cmi.interactions.${this.index}.time`, this._result);
-    scorm.set(`cmi.interactions.${this.index}.latency`, this._latency);
+    scorm.set(`cmi.interactions.${this.index}.time`, this.finishTime);
+    scorm.set(`cmi.interactions.${this.index}.latency`, this.latency);
     scorm.save();
   }
 
@@ -595,18 +650,24 @@ ml_scorm.Interaction = class Interaction {
   // updateList or something
   save() {
     scorm.set(`cmi.interactions.${this.index}.id`, this._id);
-    scorm.set(`cmi.interactions.${this.index}.type`, this._type);
-    for (i=0; i<this._objectives.length; i++) {
+    if (this.type)
+      scorm.set(`cmi.interactions.${this.index}.type`, this._type);
+    for (let i=0; i<this._objectives.length; i++) {
       scorm.set(`cmi.interactions.${this.index}.objectives.$[i}.id`, this._objectives[i].id);
     }
-    scorm.set(`cmi.interactions.${this.index}.time`, this._finishTime);
-    for (i=0; i<this.correct_responses.length; i++) {
+    if (this._finishTime)
+      scorm.set(`cmi.interactions.${this.index}.time`, this._finishTime);
+    for (let i=0; i<this.correct_responses.length; i++) {
       scorm.set(`cmi.interactions.${this.index}.correct_responses.${i}.pattern`, this._correct_responses[i]);
     }
     scorm.set(`cmi.interactions.${this.index}.weighting`, this._weighting);
-    scorm.set(`cmi.interactions.${this.index}.student_response`, this._student_response);
-    scorm.set(`cmi.interactions.${this.index}.result`, this._result);
-    scorm.set(`cmi.interactions.${this.index}.latency`, this._latency);
+    if (this._student_response)
+      scorm.set(`cmi.interactions.${this.index}.student_response`, this._student_response);
+    if (this._result)
+      scorm.set(`cmi.interactions.${this.index}.result`, this._result);
+    if (this._latency)
+      scorm.set(`cmi.interactions.${this.index}.latency`, this.latency);
+
     scorm.save();
   }
 }
@@ -617,7 +678,8 @@ ml_scorm.Interaction = class Interaction {
 // Consider turning into factory method and having interactions array be external
 ml_scorm.TrackedInteractions = class TrackedInteractions {
   constructor() {
-    this.interactions = [];
+    this._interactions = {};
+    this.blankConfig = new ml_scorm.InteractionConfig();
   }
 
   // Creates and adds new interaction to the tracked array.
@@ -625,12 +687,21 @@ ml_scorm.TrackedInteractions = class TrackedInteractions {
   // To update existing ones interact with the objects
   // TODO Need way to manage interactions that have been completed in a previous session
   //      for scoring purposes;
-  addInteraction(config) {
-    index = ml_scorm.getValue('cmi.interactions._count');
+  addInteraction(config = this.blankConfig) {
+    let index = ml_scorm.getValue('cmi.interactions._count');
     let newInteraction = new ml_scorm.Interaction(index, config);
-    this.interactions.push(newInteraction);
+    this._interactions[config.id] = newInteraction;
+    return newInteraction;
   }
 
+  // Returns number of currently tracked interactions
+  get length() {
+    return Object.keys(this._interactions).length;
+  }
+
+  getInteraction(id) {
+    return this._interactions[id];
+  }
 }
 
 ml_scorm.InteractionConfig = class InteractionConfig {
@@ -642,7 +713,7 @@ ml_scorm.InteractionConfig = class InteractionConfig {
     this.correct_responses = [];
     this.weighting = 1;
     this.student_response = "";
-    this.relust = "";
+    this.result = "";
     this.latency = "";
   }
 }
