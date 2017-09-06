@@ -290,14 +290,37 @@ ml_scorm.Objective = class Objective {
 ml_scorm.TrackedObjectives = class TrackedObjectives {
   constructor() {
     this._objectives = {};
+    restoreObjectives();
   }
 
   // Adds new objective to both the internal tracking and on the LMS
   addObjective(objectiveId, group = "default") {
-    let index = ml_scorm.getValue('cmi.objectives._count')
+    let index = ml_scorm.getValue('cmi.objectives._count');
+    let id = objectiveId + '|' + group;
     let newObjective = new ml_scorm.Objective(index, objectiveId, group);
     this._objectives[objectiveId] = newObjective;
     return newObjective;
+  }
+
+  // If objectives are present repopulates this._objectives with data from LMS
+  restoreObjectives() {
+    let count = ml_scorm.getValue('cmi.objectives._count');
+    for (let i=0; i<count: i++) {
+      let id = ml_scorm.getValue(`cmi.objectives.${i}.id`);
+      let scoreRaw = ml_scorm.getValue(`cmi.objectives.${i}.score.raw`);
+      let scoreMax = ml_scorm.getValue(`cmi.objectives.${i}.score.max`);
+      let scoreMin = ml_scorm.getValue(`cmi.objectives.${i}.score.min`);
+      let status = ml_scorm.getValue(`cmi.objectives.${i}.status`);
+      let group = id.split('|')[1];
+
+      let newObjective = new ml_scorm.Objective(i, id, group);
+
+      newObjective._score.raw = scoreRaw;
+      newObjective._score.max = scoreMax;
+      newObjective._score.min = scoreMin;
+
+      newObjective._status = status;
+    }
   }
 
 
