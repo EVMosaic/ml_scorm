@@ -286,20 +286,21 @@ ml_scorm.Objective = class Objective {
 
 // Container class to hold all objectives for a SCO.
 // Contains methods for adding new objectives one at a time or in bulk
-// Should this be a class?? Can we make this just an object?
-// TODO populate from LMS if values present
+// Should this be a class?? Can we make this just an object? --good question...
+// DONE populate from LMS if values present -- [x] Did this :D
 // NOTE changing objectives from an array to an object. Need to update docs to match
 ml_scorm.TrackedObjectives = class TrackedObjectives {
   constructor() {
     this._objectives = {};
-    restoreObjectives();
+    console.log('tracked objectives instantiated. checking for objectives to restore');
+    this.restoreObjectives();
   }
 
   // Adds new objective to both the internal tracking and on the LMS
   addObjective(objectiveId, group = "default") {
     let index = ml_scorm.getValue('cmi.objectives._count');
     let id = objectiveId + '|' + group;
-    let newObjective = new ml_scorm.Objective(index, objectiveId, group);
+    let newObjective = new ml_scorm.Objective(index, id, group);
     this._objectives[objectiveId] = newObjective;
     return newObjective;
   }
@@ -307,21 +308,27 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
   // If objectives are present repopulates this._objectives with data from LMS
   restoreObjectives() {
     let count = ml_scorm.getValue('cmi.objectives._count');
-    for (let i=0; i<count: i++) {
-      let id = ml_scorm.getValue(`cmi.objectives.${i}.id`);
+    console.log('there are ' + count + ' objectives to restore');
+
+    for (let i=0; i<count; i++) {
+      let idGroup = ml_scorm.getValue(`cmi.objectives.${i}.id`);
       let scoreRaw = ml_scorm.getValue(`cmi.objectives.${i}.score.raw`);
       let scoreMax = ml_scorm.getValue(`cmi.objectives.${i}.score.max`);
       let scoreMin = ml_scorm.getValue(`cmi.objectives.${i}.score.min`);
       let status = ml_scorm.getValue(`cmi.objectives.${i}.status`);
-      let group = id.split('|')[1];
+      let id = idGroup.split('|')[0]
+      let group = idGroup.split('|')[1];
 
       let newObjective = new ml_scorm.Objective(i, id, group);
+      console.log('restoring objective ' + id + ' at index ' + i);
 
       newObjective._score.raw = scoreRaw;
       newObjective._score.max = scoreMax;
       newObjective._score.min = scoreMin;
 
       newObjective._status = status;
+
+      this._objectives[id] = newObjective;
     }
   }
 
