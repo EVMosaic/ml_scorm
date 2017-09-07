@@ -665,7 +665,7 @@ ml_scorm.Interaction = class Interaction {
     if (this.type)
       scorm.set(`cmi.interactions.${this.index}.type`, this._type);
     for (let i=0; i<this._objectives.length; i++) {
-      scorm.set(`cmi.interactions.${this.index}.objectives.$[i}.id`, this._objectives[i].id);
+      scorm.set(`cmi.interactions.${this.index}.objectives.${i}.id`, this._objectives[i].id);
     }
     if (this._finishTime)
       scorm.set(`cmi.interactions.${this.index}.time`, this._finishTime);
