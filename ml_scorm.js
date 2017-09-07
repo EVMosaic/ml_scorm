@@ -155,7 +155,6 @@ ml_scorm.getValue = function(param) {
   }
 }
 
-
 // Retrieves bookmark location from course
 ml_scorm.getBookmark = function() {
   return ml_scorm.getValue('cmi.core.lesson_location');
@@ -165,7 +164,6 @@ ml_scorm.getBookmark = function() {
 ml_scorm.setBookmark = function(location) {
   ml_scorm.setValue('cmi.core.lesson_location', location);
 }
-
 
 
 // This is a helper object for the Objective class, but will probably be
@@ -178,14 +176,19 @@ ml_scorm.Score = class Score {
   }
 }
 
+
 // Objective Object for keeping track of objectives within a SCO.
 // Keeps a mirror of the data it sends to the LMS locally so even RO properties
 // can be accesed after storage to the LMS.
 // Currently contains ID, Status and Score (as a seperate object detailed below)
 // Index is frozen at creation and cannot be changed.
 // Values autosave to the LMS when they are updated.
+// Added a group object that allows scoring different groups of Objectives at a time
+// currently group gets added to the id in TrackedObjective so it can be added back
+// when being reloaded.
 
-// TODO consider rewriting getters to not pull from LMS if value present
+// DONE consider rewriting getters to not pull from LMS if value present
+// Above  was handled in TrackedObjectives
 ml_scorm.Objective = class Objective {
   // Creates a new Objective object and adds it to LMS
   // Index is non editable after creation.
@@ -229,7 +232,6 @@ ml_scorm.Objective = class Objective {
     this._status = newStatus;
     ml_scorm.setValue(`cmi.objectives.${this.index}.status`, newStatus);
   }
-
   // Retrieve status of objective from LMS
   get status() {
     this._status = ml_scorm.getValue(`cmi.objectives.${this.index}.status`);
@@ -242,7 +244,6 @@ ml_scorm.Objective = class Objective {
     this._score.raw = rawScore;
     ml_scorm.setValue(`cmi.objectives.${this.index}.score.raw`, rawScore);
   }
-
   // This is a read only property on the LMS so no retrival is done before
   // returning the value. this is provided to keep track of score outside
   // of the LMS
@@ -250,24 +251,25 @@ ml_scorm.Objective = class Objective {
     return this._score.raw;
   }
 
+  // Sets max score on Score object. Used with min score for weighted scores
   set maxScore(max) {
     this._score.max = max;
     ml_scorm.setValue(`cmi.objectives.${this.index}.score.max`, max);
   }
-
+  // returns max score
   get maxScore() {
     return this._score.max;
   }
 
+  // Sets min score on Score object. Used with max score for weighted scores
   set minScore(min) {
     this._score.min = min;
     ml_scorm.setValue(`cmi.objectives.${this.index}.score.min`, min);
   }
-
+  // returns min score
   get minScore() {
     return this._score.min;
   }
-
 
   // Changes will be updated to the LMS as they are made to the
   // object. This method is probably redundant, but provides a way
@@ -328,12 +330,13 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
     return Object.keys(this._objectives).length;
   }
 
+  // Retrieves named objective from internal _objectives dictionary
   getObjective(id) {
     return this._objectives[id];
   }
 
+  // Sums all existing scores for tracked objectives.
   // Useful for when the total score is a combined total of all sub objectives.
-  // sums all existing scores for tracked objectives.
   calculateTotalScore(group = "default") {
 
    let objectives = Object.values(this._objectives);
@@ -356,6 +359,7 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
 
   }
 
+  //NOTE this is not being used and uses outdated syntax. Needs work or depreciation
   // Convienence function to add a list of objectives all at once
   // Takes in a list of IDs and creates a new objective for each
   // Will only add list if LMS does not contain any objectives at
@@ -383,28 +387,29 @@ ml_scorm.Interaction = class Interaction {
     });
 
     this._id = config.id;
-    // must be unique
-    // required
+    // must be unique 255 char max, no whitespace or unprintable chars
+    // required WO
 
     this._type = config.type;
-    // use INTERACTION types
-    // required
+    // use ml_scorm.INTERACTION types
+    // semi-required WO
 
     this._objectives = config.objectives;
     // objectives.n.id
     // this is purely informative, there is no actual linking to
     // Objectives
-    // optional
+    // optional WO
 
     this._startTime = ""
-
+    // startTime and finishTime should be stored internally as Date objects
+    // NOTE should probably change the default values to reflect that fact
     this._finishTime = "";
     // this is inconsistently documented as both the time interaction
     // was first shown to student, and time interaction was completed
     // im going to use completed for tracking, but if you want to change
     // that feel free
-    // time interaction was completed (format HH:MM:SS.SS) WO
-    // optional
+    // time interaction was completed (format HH:MM:SS.SS)
+    // optional WO
 
     this._correct_responses = config.correct_responses;
     // correct_responses.n.pattern
@@ -421,28 +426,34 @@ ml_scorm.Interaction = class Interaction {
     // numeric: single number with or without decimal
     // likert: can be blank, no incorrect response
     //  strongly agree - agree - neutral - disagree - strongly disagree
+    //  expects single character  [0-9, a-z]
     // matching: pairs of identifiers separated by a period
+    //  identifiers are single characters [0-9, a-z]
+    //  separate pairs with commas and use currly brackets if all pairs
+    //   required to mark complete
+    //   ie. {1.a,2.c,3.a,4.b}
     // performance: alphanumeric string 255 chars max
-    // sequencing: series of single characters [0-9,a-z,A-Z]
+    // sequencing: series of single characters [0-9,a-z] separated by commas
+    //  order determines correctness.
     // optional
 
     this._weighting = config.weighting;
     // single floating point number, higher numbers weighted heavier
-    // optional
+    // optional WO
 
     this._student_response = '';
     // see correct_responses for further details
-    // optional
+    // optional WO
 
     this._result = ml_scorm.RESULT.NEUTRAL;
     // use legal values from RESULT constant or a floating point number
-    // optional
+    // optional WO
 
     this._latency = "";
     // HHHH:MM:SS.SS
     // time from presentation of stimulus to completion of mesurable response
     // ie how long it takes the student to answer the question
-    // optional
+    // optional WO
 
     // takes values and writes initial state to LMS
     this.save()
@@ -455,7 +466,6 @@ ml_scorm.Interaction = class Interaction {
     this._id = newId;
     ml_scorm.setValue(`cmi.interactions.${this.index}.id`, newId);
   }
-
   // Pulls interaction ID from LMS
   // This is write only value on LMS, returned value is from object
   get id() {
@@ -468,7 +478,6 @@ ml_scorm.Interaction = class Interaction {
     this._type = newType;
     ml_scorm.setValue(`cmi.interactions.${this.index}.type`, newType);
   }
-
   // Returns interaction type.
   // This is a write only value on LMS, returned value is from object
   get type() {
@@ -486,7 +495,6 @@ ml_scorm.Interaction = class Interaction {
     }
     scorm.save();
   }
-
   // Gets interactions objectives array and logs the current count.
   // Can get rid of log if desired.
   get objectives() {
@@ -495,20 +503,26 @@ ml_scorm.Interaction = class Interaction {
     return this._objectives;
   }
 
+  // Adds objective to interactions objective array
   addObjective(objective) {
     this._objectives.push(objective);
     ml_scorm.setValue(`cmi.interactions.${this.index}.objectives.${this._objectives.length - 1}.id`, objective.id);
   }
 
+  // Sets internal start time. Both startTime and finishTime should be stored internally as
+  // Date objects. This is handled automatically when using start() and finish().
+  // By default this value is only used internally while finishTime is used to
+  // record to cmi.interactions.n.time but you could use startTime at your discretion.
   set startTime(t) {
     this._startTime = t;
   }
-
+  // Returns startTime
   get startTime() {
     return this.formatTime(this._startTime);
   }
 
   // Sets finishTime and updates latency based on start time.
+  // Both startTime and finishTime should be stored internally as Date objects.
   set finishTime(t) {
     this._finishTime = t;
     this._latency = formatTime(this.startTime - t);
@@ -516,16 +530,17 @@ ml_scorm.Interaction = class Interaction {
     scorm.set(`cmi.interactions.${this.index}.latency`, this._latency);
     scorm.save();
   }
-
-  // Returns finish time
+  // Returns finishTime as a formatted time string
   get finishTime() {
     return this.formatTime(this._finishTime);
   }
 
+  // Sets the amount of time between start and finish times. This is handled
+  // automatically when finishTime is set.
   set latency(t) {
     this._latency = t;
   }
-
+  // returns latency as a formatted timespan string
   get latency() {
     return this.formatTimespan(this._latency);
   }
@@ -539,7 +554,6 @@ ml_scorm.Interaction = class Interaction {
     }
     scorm.save();
   }
-
   // Gets the correct_response array and logs the count
   // Can get rid of log if desired
   get correct_responses() {
@@ -552,7 +566,6 @@ ml_scorm.Interaction = class Interaction {
     this._weighting = newWeight;
     ml_scorm.setValue(`cmi.interactions.${this.index}.correct_responses`, newWeight);
   }
-
   // Gets the score weigthing of the interaction
   // This is a write only value on LMS, returned value is from object
   get weighting() {
@@ -565,7 +578,6 @@ ml_scorm.Interaction = class Interaction {
     this._student_response = newResponse;
     ml_scorm.setValue(`cmi.interactions.${this.index}.student_response`, newResponse);
   }
-
   // Gets student_response
   // This is a write only value on LMS, returned value is from object
   get student_response() {
@@ -578,18 +590,18 @@ ml_scorm.Interaction = class Interaction {
     this._result = newResult;
     ml_scorm.setValue(`cmi.interactions.${this.index}.result`, newResult);
   }
-
   // Gets result
   // This is a write only value on LMS, returned value is from object
   get result() {
     return this._result;
   }
 
-
   // Initializes interaction object and logs state to LMS.
   // Some values ie startTime, finishTime need to be updated at later points
   // through the begin() and complete() methods.
   // This method is called automatically at creation.
+  // NOTE At this point all functionality has been moved from this method.
+  // Reccomend depreciating this method and moving save into the constructor
   initialize() {
     this.save();
   }
@@ -676,6 +688,9 @@ ml_scorm.Interaction = class Interaction {
 // Doesn't do a whole lot right now other than ensure added interactions go
 // in sequntial order.
 // Consider turning into factory method and having interactions array be external
+// Not sure about the above idea, more inclined to use the Tracked objectives note
+// idea and use these as internal objects and have the tracked objects be properties
+// of ml_scorm
 ml_scorm.TrackedInteractions = class TrackedInteractions {
   constructor() {
     this._interactions = {};
@@ -699,11 +714,15 @@ ml_scorm.TrackedInteractions = class TrackedInteractions {
     return Object.keys(this._interactions).length;
   }
 
+  // Returns named objectives from internal dictionary
   getInteraction(id) {
     return this._interactions[id];
   }
 }
 
+
+// Configuration object to pass to Interaction or TrackedInteraction to
+// initialize an Interaction object with multiple complex settings.
 ml_scorm.InteractionConfig = class InteractionConfig {
   constructor() {
     this.id = "";
