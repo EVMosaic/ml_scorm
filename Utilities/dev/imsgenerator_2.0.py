@@ -121,7 +121,7 @@ class MosaicXmlGenerator(object):
 
     def make_intro(self, identifier, version, unit, lesson):
         self.file.write('''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<manifest identifier=''' + identifier + ''' version=''' + version + '''
+<manifest identifier="''' + identifier + '''" version="''' + version + '''"
          xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
          xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
