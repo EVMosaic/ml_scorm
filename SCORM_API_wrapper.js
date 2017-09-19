@@ -30,7 +30,7 @@ pipwerks.UTILS = {};                                //For holding UTILS function
 pipwerks.debug = { isActive: true };                //Enable (true) or disable (false) for debug mode
 
 pipwerks.SCORM = {                                  //Define the SCORM object
-    version:    null,                               //Store SCORM version.
+    version:    "1.2",                               //Store SCORM version.
     handleCompletionStatus: true,                   //Whether or not the wrapper should automatically handle the initial completion status
     handleExitMode: true,                           //Whether or not the wrapper should automatically handle the exit mode
     API:        { handle: null,
