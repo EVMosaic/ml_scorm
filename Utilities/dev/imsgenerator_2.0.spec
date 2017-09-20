@@ -4,9 +4,9 @@ block_cipher = None
 
 
 a = Analysis(['imsgenerator_2.0.py'],
-             pathex=['C:\\Users\\eric_\\Desktop\\E DRIVE\\Git\\ml_scorm\\Utilities'],
+             pathex=['C:\\Users\\eric_\\Desktop\\E DRIVE\\Git\\ml_scorm\\Utilities\\dev'],
              binaries=[],
-             datas=[('C:\\Users\\eric_\\Desktop\\E DRIVE\\Git\\ml_scorm\\Utilities\\Watermelon16.ico', 'data')],
+             datas=[('C:\\Users\\eric_\\Desktop\\E DRIVE\\Git\\ml_scorm\\Utilities\\dev\\Watermelon16.ico', 'data')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
