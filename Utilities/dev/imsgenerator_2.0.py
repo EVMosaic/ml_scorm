@@ -48,6 +48,7 @@ class Application:
             self.generate_button['bg'] = "#7cffac"
             self.generate_button['text'] = "Manifest Generated!"
             self.generate_button['fg'] = "black"
+            os.startfile(self.project_root, 'explore')
 
     def resource_path(self, relative_path):
         """ Get absolute path to resource, works for dev and for PyInstaller """
