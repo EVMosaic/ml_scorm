@@ -20,6 +20,7 @@ class Application:
         self.root.mainloop()
 
     def set_project_root(self):
+        self.project_path_entry.delete(0, 'end')
 
         self.generate_button['bg'] = "#f0236b"
         self.generate_button['text'] = "Generate"
