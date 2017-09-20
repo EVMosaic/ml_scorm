@@ -20,15 +20,17 @@ class Application:
         self.root.mainloop()
 
     def set_project_root(self):
+
+        self.generate_button['bg'] = "#f0236b"
+        self.generate_button['text'] = "Generate"
+        self.generate_button['fg'] = "white"
+
         opts = {'parent': self.root,
                 'title': 'Select SCORM Project Root',
                 'initialdir': self.initialdir}
 
         self.project_root = abspath(filedialog.askdirectory(**opts))
         self.project_path_entry.insert(0, self.project_root)
-        self.generate_button['bg'] = "#f0236b"
-        self.generate_button['text'] = "Generate"
-        self.generate_button['fg'] = "white"
 
         self.initialdir = self.project_root
 
