@@ -15,19 +15,22 @@ class Application:
         self.version = ""
         self.identifier = ""
         self.project_root = ""
+        self.initialdir = "C:/"
         self.build_gui()
         self.root.mainloop()
 
     def set_project_root(self):
         opts = {'parent': self.root,
                 'title': 'Select SCORM Project Root',
-                'initialdir': 'C:/'}
+                'initialdir': self.initialdir}
 
         self.project_root = abspath(filedialog.askdirectory(**opts))
         self.project_path_entry.insert(0, self.project_root)
         self.generate_button['bg'] = "#f0236b"
         self.generate_button['text'] = "Generate"
         self.generate_button['fg'] = "white"
+
+        self.initialdir = self.project_root
 
     def generate(self):
         unit_title = self.unit_title_entry.get()
