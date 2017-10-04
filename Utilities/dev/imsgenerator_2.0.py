@@ -35,7 +35,6 @@ class Application:
 
         self.initialdir = self.project_root
 
-        #TODO Make changes in project_path_entry apply in generate so you can manually tell it where to update vs having to use the dialog
     def generate_manifest(self):
         unit_title = self.unit_title_entry.get()
         lesson_title = self.lesson_title_entry.get()
