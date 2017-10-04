@@ -34,8 +34,8 @@ class Application:
 
         self.initialdir = self.project_root
 
-    def generate(self):
         #TODO Make changes in project_path_entry apply in generate so you can manually tell it where to update vs having to use the dialog
+    def generate_manifest(self):
         unit_title = self.unit_title_entry.get()
         lesson_title = self.lesson_title_entry.get()
         version = self.version_entry.get()
@@ -45,10 +45,10 @@ class Application:
             generator = MosaicXmlGenerator(new_file)
             generator.make_intro(identifier, version, unit_title, lesson_title)
             generator.make_resources()
-            self.generate_button['bg'] = "#7cffac"
-            self.generate_button['text'] = "Manifest Generated!"
-            self.generate_button['fg'] = "black"
-            os.startfile(self.project_root, 'explore')
+            self.manifest_button["bg"] = "#7cffac"
+            self.manifest_button["text"] = "Manifest Generated!"
+            self.manifest_button["fg"] = "black"
+            os.startfile(self.project_root, "explore")
 
     def resource_path(self, relative_path):
         """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -94,7 +94,7 @@ class Application:
 
         self.project_root_button = Button(self.root, text="Select Project Root", command=self.set_project_root,
                                           background=button_color, foreground="white")
-        self.generate_button = Button(self.root, text="Generate", command=self.generate, background=button_color,
+        self.manifest_button = Button(self.root, text="Generate Manifest", command=self.generate_manifest, background=button_color,
                                       foreground="white")
 
         self.unit_label = Label(self.root, text="Unit Title:", background=bg_color)
@@ -115,7 +115,7 @@ class Application:
         self.version_label.grid(row=4, column=0, sticky="e", padx=xpad, pady=ypad)
         self.identifier_entry.grid(row=5, column=1, sticky="ew", padx=xpad, pady=ypad)
         self.identifier_label.grid(row=5, column=0, sticky="e", padx=xpad, pady=ypad)
-        self.generate_button.grid(row=6, columnspan=2, sticky="ew", padx=xpad, pady=ypad)
+        self.manifest_button.grid(row=6, columnspan=2, sticky="ew", padx=xpad, pady=ypad)
     def reset_gui(self):
         # reset manifest_button to default state
         self.manifest_button["bg"] = "#f0236b"
