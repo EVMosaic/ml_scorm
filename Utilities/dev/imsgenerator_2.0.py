@@ -81,6 +81,7 @@ class Application:
         return True
 
     def build_gui(self):
+        # looking at this now I'm not sure why everything is a variable on self?
         self.root = tkinter.Tk()
         self.root.iconbitmap(self.resource_path('.\\Watermelon16.ico'))
         self.root.wm_title("IMS Manifest Generator")
@@ -195,7 +196,7 @@ class MosaicXmlGenerator(object):
                 for filename in filenames:
                     if not isfile(dirpath + '/' + filename):
                         continue
-                    if filename == 'imsgenerator.py':  # exclude this script itself
+                    if filename == 'imsgenerator.py':  # exclude this script itself #this is outdated now...
                         continue
                     self.file.write(self.make_file_row(dirpath, filename))
                     self.file.write('\n')
