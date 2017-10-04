@@ -85,7 +85,7 @@ class Application:
         self.root = tkinter.Tk()
         self.root.iconbitmap(self.resource_path('.\\Watermelon16.ico'))
         self.root.wm_title("IMS Manifest Generator")
-        self.root.minsize(300, 100)
+        self.root.minsize(300, 140)
         self.root.resizable(True, False)
         self.root.lift()
 
