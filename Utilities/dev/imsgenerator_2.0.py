@@ -2,7 +2,8 @@
 import os
 import sys
 from os import walk
-from os.path import isfile, join, abspath
+from os.path import isfile, join, abspath, dirname
+from shutil import make_archive
 import tkinter
 from tkinter import filedialog
 from tkinter import Entry, Label, Button, Grid
@@ -50,6 +51,16 @@ class Application:
             self.manifest_button["fg"] = "black"
             os.startfile(self.project_root, "explore")
 
+    def make_scorm_package(self):
+        # create directory one level above project root called SCORM Packages for zip file
+        output = join(dirname(self.project_root), 'SCORM Packages', self.zip_entry.get())
+        make_archive(output, "zip", self.project_root)
+
+        self.package_button["bg"] = "#7cffac"
+        self.package_button["text"] = "SCORM Package Generated!"
+        self.package_button["fg"] = "black"
+        os.startfile(dirname(output), "explore")
+
     def resource_path(self, relative_path):
         """ Get absolute path to resource, works for dev and for PyInstaller """
         try:
@@ -62,8 +73,15 @@ class Application:
             base_path = ""
 
         return os.path.join(base_path, relative_path)
-    def build_gui(self):
 
+    def root_changed_callback(self):
+        if  self.project_root != abspath(self.project_path_entry.get()):
+            self.project_root = abspath(self.project_path_entry.get())
+            self.reset_gui()
+        # Should probably do some actual validation here, but for now just always return True
+        return True
+
+    def build_gui(self):
         self.root = tkinter.Tk()
         self.root.iconbitmap(self.resource_path('.\\Watermelon16.ico'))
         self.root.wm_title("IMS Manifest Generator")
@@ -81,11 +99,12 @@ class Application:
 
         self.root["bg"] = bg_color
 
-        self.project_path_entry = Entry(self.root, background=text_box_color)
+        self.project_path_entry = Entry(self.root, background=text_box_color, validate="focusout", validatecommand=self.root_changed_callback)
         self.unit_title_entry = Entry(self.root, background=text_box_color)
         self.lesson_title_entry = Entry(self.root, background=text_box_color)
         self.version_entry = Entry(self.root, background=text_box_color)
         self.identifier_entry = Entry(self.root, background=text_box_color)
+        self.zip_entry = Entry(self.root, background=text_box_color)
 
         self.unit_title_entry.insert(0, "Unit 1")
         self.lesson_title_entry.insert(0, "Lesson 1")
@@ -96,11 +115,14 @@ class Application:
                                           background=button_color, foreground="white")
         self.manifest_button = Button(self.root, text="Generate Manifest", command=self.generate_manifest, background=button_color,
                                       foreground="white")
+        self.package_button = Button(self.root, text="Make SCORM Package", command=self.make_scorm_package,
+                                          background=button_color, foreground="white")
 
         self.unit_label = Label(self.root, text="Unit Title:", background=bg_color)
         self.lesson_label = Label(self.root, text="Lesson Title:", background=bg_color)
         self.version_label = Label(self.root, text="Version:", background=bg_color)
         self.identifier_label = Label(self.root, text="Identifier:", background=bg_color)
+        self.zip_label = Label(self.root, text="Zip File Name:", background=bg_color)
 
         xpad = 5
         ypad = 3
@@ -116,6 +138,10 @@ class Application:
         self.identifier_entry.grid(row=5, column=1, sticky="ew", padx=xpad, pady=ypad)
         self.identifier_label.grid(row=5, column=0, sticky="e", padx=xpad, pady=ypad)
         self.manifest_button.grid(row=6, columnspan=2, sticky="ew", padx=xpad, pady=ypad)
+        self.zip_label.grid(row=7, column=0, sticky="e", padx=xpad, pady=ypad)
+        self.zip_entry.grid(row=7, column=1, sticky="ew", padx=xpad, pady=ypad)
+        self.package_button.grid(row=8, columnspan=2, sticky="ew", padx=xpad, pady=ypad)
+
     def reset_gui(self):
         # reset manifest_button to default state
         self.manifest_button["bg"] = "#f0236b"
