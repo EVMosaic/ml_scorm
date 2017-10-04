@@ -20,15 +20,15 @@ class Application:
         self.root.mainloop()
 
     def set_project_root(self):
-        self.project_path_entry.delete(0, 'end')
+        self.project_path_entry.delete(0, "end")
 
         self.generate_button['bg'] = "#f0236b"
         self.generate_button['text'] = "Generate"
         self.generate_button['fg'] = "white"
 
-        opts = {'parent': self.root,
-                'title': 'Select SCORM Project Root',
-                'initialdir': self.initialdir}
+        opts = {"parent": self.root,
+                "title": "Select SCORM Project Root",
+                "initialdir": self.initialdir}
 
         self.project_root = abspath(filedialog.askdirectory(**opts))
         self.project_path_entry.insert(0, self.project_root)
@@ -41,8 +41,8 @@ class Application:
         lesson_title = self.lesson_title_entry.get()
         version = self.version_entry.get()
         identifier = self.identifier_entry.get()
-        file_path = os.path.join(self.project_root, 'imsmanifest.xml')
-        with open(file_path, 'w', encoding='utf8') as new_file:
+        file_path = os.path.join(self.project_root, "imsmanifest.xml")
+        with open(file_path, "w", encoding="utf8") as new_file:
             generator = MosaicXmlGenerator(new_file)
             generator.make_intro(identifier, version, unit_title, lesson_title)
             generator.make_resources()
@@ -57,10 +57,10 @@ class Application:
             # PyInstaller creates a temp folder and stores path in _MEIPASS,
             # and places our data files in a folder relative to that temp
             # folder named as specified in the datas tuple in the spec file
-            base_path = os.path.join(sys._MEIPASS, 'data')
+            base_path = os.path.join(sys._MEIPASS, "data")
         except Exception:
             # sys._MEIPASS is not defined, so use the original path
-            base_path = ''
+            base_path = ""
 
         return os.path.join(base_path, relative_path)
     def build_gui(self):
@@ -80,7 +80,7 @@ class Application:
         text_box_color = "#7cffac"
         bg_color = "#f98294"
 
-        self.root['bg'] = bg_color
+        self.root["bg"] = bg_color
 
         self.project_path_entry = Entry(self.root, background=text_box_color)
         self.unit_title_entry = Entry(self.root, background=text_box_color)
@@ -93,7 +93,7 @@ class Application:
         self.version_entry.insert(0, 1)
         self.identifier_entry.insert(0, "com.mosaiclearning.client.project")
 
-        self.project_root_button = Button(self.root, text='Select Project Root', command=self.set_project_root,
+        self.project_root_button = Button(self.root, text="Select Project Root", command=self.set_project_root,
                                           background=button_color, foreground="white")
         self.generate_button = Button(self.root, text="Generate", command=self.generate, background=button_color,
                                       foreground="white")
