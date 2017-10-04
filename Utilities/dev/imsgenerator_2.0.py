@@ -19,12 +19,11 @@ class Application:
         self.build_gui()
         self.root.mainloop()
 
+
     def set_project_root(self):
         self.project_path_entry.delete(0, "end")
 
-        self.generate_button['bg'] = "#f0236b"
-        self.generate_button['text'] = "Generate"
-        self.generate_button['fg'] = "white"
+        self.reset_gui()
 
         opts = {"parent": self.root,
                 "title": "Select SCORM Project Root",
@@ -117,7 +116,16 @@ class Application:
         self.identifier_entry.grid(row=5, column=1, sticky="ew", padx=xpad, pady=ypad)
         self.identifier_label.grid(row=5, column=0, sticky="e", padx=xpad, pady=ypad)
         self.generate_button.grid(row=6, columnspan=2, sticky="ew", padx=xpad, pady=ypad)
+    def reset_gui(self):
+        # reset manifest_button to default state
+        self.manifest_button["bg"] = "#f0236b"
+        self.manifest_button["text"] = "Generate Manifest"
+        self.manifest_button["fg"] = "white"
 
+        # reset package_button to default state
+        self.package_button["bg"] = "#f0236b"
+        self.package_button["text"] = "Make SCORM Package"
+        self.package_button["fg"] = "white"
 
 
 
