@@ -86,10 +86,26 @@ ml_scorm.DEBUG = {
 }
 Object.freeze(ml_scorm.DEBUG);
 
+ml_scorm._data = '';
+
+Object.defineProperty(ml_scorm,
+                      'data',
+                      {
+                        get: function() {
+                          return this._data;
+                        },
+                        set: function(newData) {
+                          ml_scorm.setValue('cmi.suspend_data', newData)
+                          this._data = newData;
+                        }
+                      });
+
 // Called once a SCO has been loaded to get connection to LMS
 // Handles LMSInitalize
 ml_scorm.initSCO = function() {
   ml_scorm.lmsConnected = scorm.init();
+  ml_scorm._data = this.getValue('cmi.suspend_data');
+  console.log('ml_scorm._data');
 }
 
 // Called once a SCO is unloaded. Neccesary to finalize interaction
