@@ -171,6 +171,7 @@ ml_scorm.getValue = function(param) {
   }
 }
 
+
 // Retrieves bookmark location from course
 ml_scorm.getBookmark = function() {
   return ml_scorm.getValue('cmi.core.lesson_location');
@@ -180,6 +181,7 @@ ml_scorm.getBookmark = function() {
 ml_scorm.setBookmark = function(location) {
   ml_scorm.setValue('cmi.core.lesson_location', location);
 }
+
 
 
 // This is a helper object for the Objective class, but will probably be
@@ -248,6 +250,7 @@ ml_scorm.Objective = class Objective {
     this._status = newStatus;
     ml_scorm.setValue(`cmi.objectives.${this.index}.status`, newStatus);
   }
+
   // Retrieve status of objective from LMS
   get status() {
     this._status = ml_scorm.getValue(`cmi.objectives.${this.index}.status`);
@@ -260,6 +263,7 @@ ml_scorm.Objective = class Objective {
     this._score.raw = rawScore;
     ml_scorm.setValue(`cmi.objectives.${this.index}.score.raw`, rawScore);
   }
+
   // This is a read only property on the LMS so no retrival is done before
   // returning the value. this is provided to keep track of score outside
   // of the LMS
@@ -272,6 +276,7 @@ ml_scorm.Objective = class Objective {
     this._score.max = max;
     ml_scorm.setValue(`cmi.objectives.${this.index}.score.max`, max);
   }
+
   // returns max score
   get maxScore() {
     return this._score.max;
@@ -286,6 +291,7 @@ ml_scorm.Objective = class Objective {
   get minScore() {
     return this._score.min;
   }
+
 
   // Changes will be updated to the LMS as they are made to the
   // object. This method is probably redundant, but provides a way
@@ -489,6 +495,7 @@ ml_scorm.Interaction = class Interaction {
     this._id = newId;
     ml_scorm.setValue(`cmi.interactions.${this.index}.id`, newId);
   }
+
   // Pulls interaction ID from LMS
   // This is write only value on LMS, returned value is from object
   get id() {
@@ -501,6 +508,7 @@ ml_scorm.Interaction = class Interaction {
     this._type = newType;
     ml_scorm.setValue(`cmi.interactions.${this.index}.type`, newType);
   }
+
   // Returns interaction type.
   // This is a write only value on LMS, returned value is from object
   get type() {
@@ -518,6 +526,7 @@ ml_scorm.Interaction = class Interaction {
     }
     scorm.save();
   }
+
   // Gets interactions objectives array and logs the current count.
   // Can get rid of log if desired.
   get objectives() {
@@ -539,6 +548,7 @@ ml_scorm.Interaction = class Interaction {
   set startTime(t) {
     this._startTime = t;
   }
+
   // Returns startTime
   get startTime() {
     return this.formatTime(this._startTime);
@@ -563,6 +573,7 @@ ml_scorm.Interaction = class Interaction {
   set latency(t) {
     this._latency = t;
   }
+
   // returns latency as a formatted timespan string
   get latency() {
     return this.formatTimespan(this._latency);
@@ -577,6 +588,7 @@ ml_scorm.Interaction = class Interaction {
     }
     scorm.save();
   }
+
   // Gets the correct_response array and logs the count
   // Can get rid of log if desired
   get correct_responses() {
@@ -589,6 +601,7 @@ ml_scorm.Interaction = class Interaction {
     this._weighting = newWeight;
     ml_scorm.setValue(`cmi.interactions.${this.index}.correct_responses`, newWeight);
   }
+
   // Gets the score weigthing of the interaction
   // This is a write only value on LMS, returned value is from object
   get weighting() {
@@ -601,6 +614,7 @@ ml_scorm.Interaction = class Interaction {
     this._student_response = newResponse;
     ml_scorm.setValue(`cmi.interactions.${this.index}.student_response`, newResponse);
   }
+
   // Gets student_response
   // This is a write only value on LMS, returned value is from object
   get student_response() {
@@ -613,11 +627,13 @@ ml_scorm.Interaction = class Interaction {
     this._result = newResult;
     ml_scorm.setValue(`cmi.interactions.${this.index}.result`, newResult);
   }
+
   // Gets result
   // This is a write only value on LMS, returned value is from object
   get result() {
     return this._result;
   }
+
 
   // Initializes interaction object and logs state to LMS.
   // Some values ie startTime, finishTime need to be updated at later points
@@ -759,3 +775,4 @@ ml_scorm.InteractionConfig = class InteractionConfig {
     this.latency = "";
   }
 }
+
