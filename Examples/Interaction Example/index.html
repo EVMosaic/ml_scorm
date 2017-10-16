@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>ETA SCORM Demo</title>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Merriweather:300i,400|Squada+One|Inconsolata" rel="stylesheet">
+  <script src="SCORM_API_wrapper.js"></script>
+  <script src="ml_scorm.js"></script>
+  <script type="text/javascript" src="data.js"></script>
+  <body>
+    <h1>Quiz 1</h1>
+      <div class="quiz" id="quiz1" data-answer="B">
+        <div class="question-text" id="question-text"></div>
+        <ul>
+          <li class="answer">
+            <div class="letter">
+              <div>A</div>
+            </div>
+            <div class="answer-text" id="answer-a"></div>
+          </li>
+          <li class="answer">
+            <div class="letter">
+              <div>B</div>
+            </div>
+            <div class="answer-text" id="answer-b"></div>
+          </li>
+          <li class="answer">
+            <div class="letter">
+              <div>C</div>
+            </div>
+            <div class="answer-text" id="answer-c"></div>
+          </li>
+          <li class="answer">
+            <div class="letter">
+              <div>D</div>
+            </div>
+            <div class="answer-text"  id="answer-d"></div>
+          </li>
+        </ul>
+
+        <div id="grade1" class="button">Submit Answer</div>
+      </div>
+    <div id="feedback"> The correct answer was: <span id="correct_answer"></span><br> You answered: <span id="student_answer"></span></div>
+    <div class="button-container"><button class="nav_button" id="prev_button">
+      Prev Question
+    </button>
+    <button class="nav_button" id="next_button">
+      Next Question
+    </button>
+  </div>
+  <script src="javascript.js"></script>
+</body>
+</html>

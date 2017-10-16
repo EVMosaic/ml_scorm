@@ -1,0 +1,133 @@
+h1 {
+  font-family: 'Squada One';
+  font-size: 80px;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+body {
+   font-family: 'Merriweather', serif;
+   margin: 0;
+   padding: 0;
+}
+
+ul {
+
+  font-size: 25px;
+  list-style: none;
+  padding: 0;
+  margin: 10px;
+}
+
+.answer {
+  display: flex;
+  justify-content: space-around;
+  border: black solid 3px;
+  border-radius: 30px;
+  padding: 5px;
+  margin: 10px auto;
+  background: lightsteelblue;
+  max-width: 500px;
+  cursor: pointer;
+}
+
+.letter {
+  border: solid black 5px;
+  border-radius: 35px;
+  height: 30px;
+  width: 35px;
+  background: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 5px;
+  flex: 0 0 35px;
+}
+
+.answer-text {
+  flex: 2.5 0 15%;
+  text-align: center;
+  align-self: center;
+}
+
+.selected {
+  background: honeydew;
+}
+
+
+.correct {
+  background: greenyellow;
+}
+
+.incorrect {
+  background: crimson;
+}
+
+.question-text {
+  margin: 10px auto;
+  background: coral;
+  width: 80%;
+  text-align: center;
+  font-size: 30px;
+  padding: 11px;
+  color: white;
+  border-radius: 50px;
+  border: solid black 3px;
+
+}
+
+.button {
+  border: solid black 3px;
+  width: 300px;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 30px;
+  border-radius: 30px;
+  padding: 5px;
+  background: cornflowerblue;
+  color: white;
+  cursor: pointer;
+  flex: 1 1 calc(50% - 36px);
+}
+
+.button:hover {
+  background: darkseagreen;
+}
+
+.button:active {
+  background: steelblue;
+}
+
+
+.nav_button {
+  background-color: black;
+  color: white;
+  font-size: 20px;
+  padding: 10px;
+  margin: 10px auto;
+  display: block;
+  border-radius: 50px;
+  border: solid grey 5px;
+  font-family: 'Merriweather', serif;
+  cursor: pointer;
+}
+
+.nav_button:hover {
+  background-color: grey;
+}
+
+.nav_button:active {
+  background-color: slategrey;
+}
+
+.button-container {
+  display: flex;
+}
+
+#feedback {
+  text-align: center;
+  background: antiquewhite;
+  margin: 10px;
+  padding: 10px;
+  display: none;
+}
