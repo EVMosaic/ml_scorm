@@ -322,7 +322,7 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
   addObjective(objectiveId, group = "default") {
     let index = ml_scorm.getValue('cmi.objectives._count');
     let id = objectiveId + '|' + group;
-    let newObjective = new ml_scorm.Objective(index, objectiveId, group);
+    let newObjective = new ml_scorm.Objective(index, id, group);
     this._objectives[objectiveId] = newObjective;
     return newObjective;
   }
