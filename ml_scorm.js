@@ -334,23 +334,25 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
 
     for (let i=0; i<count; i++) {
       let idGroup = ml_scorm.getValue(`cmi.objectives.${i}.id`);
-      let scoreRaw = ml_scorm.getValue(`cmi.objectives.${i}.score.raw`);
-      let scoreMax = ml_scorm.getValue(`cmi.objectives.${i}.score.max`);
-      let scoreMin = ml_scorm.getValue(`cmi.objectives.${i}.score.min`);
+      let scoreRaw = parseInt(ml_scorm.getValue(`cmi.objectives.${i}.score.raw`)) || 0;
+      let scoreMin = parseInt(ml_scorm.getValue(`cmi.objectives.${i}.score.min`)) || 0;
+      let scoreMax = parseInt(ml_scorm.getValue(`cmi.objectives.${i}.score.max`)) || 100; //NOTE if max score is set to 0 this will be overwritten to 100 on reload. //TODO fix this
       let status = ml_scorm.getValue(`cmi.objectives.${i}.status`);
       let id = idGroup.split('|')[0]
       let group = idGroup.split('|')[1];
 
-      let newObjective = new ml_scorm.Objective(i, id, group);
+      let newObjective = new ml_scorm.Objective(i, idGroup, group);
       console.log('restoring objective ' + id + ' at index ' + i);
 
       newObjective._score.raw = scoreRaw;
-      newObjective._score.max = scoreMax;
       newObjective._score.min = scoreMin;
+      newObjective._score.max = scoreMax;
 
       newObjective._status = status;
 
       this._objectives[id] = newObjective;
+
+      newObjective.save();
     }
   }
 
