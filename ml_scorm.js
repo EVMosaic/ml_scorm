@@ -381,11 +381,15 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
     }, 0);
   }
 
-  checkAllCompleted() {
+  checkAllCompleted(group = "default") {
     let objectives = Object.values(this._objectives);
 
     return objectives.reduce( (completed, obj) => {
-      return completed && (obj._status === ml_scorm.STATUS.completed)
+      if (obj.group === group) {
+        return completed && (obj._status === ml_scorm.STATUS.COMPLETED)
+      } else {
+        return completed;
+      }
     }, true);
 
   }
