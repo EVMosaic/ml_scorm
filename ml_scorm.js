@@ -157,6 +157,15 @@ ml_scorm.setValue = function(param, value) {
   }
 }
 
+ml_scorm.setValueDeferred = function(param, value) {
+  if (ml_scorm.lmsConnected) {
+    ml_scorm.DEBUG.LOG(`setting ${param} to ${value}`);
+    scorm.set(param, value);
+  } else {
+    ml_scorm.DEBUG.WARN('LMS NOT CONNECTED');
+  }
+}
+
 // Convenience wrapper for getting SCROM variables.
 // All values are returned as strings. Remember to parse if you
 // are expecting a number
