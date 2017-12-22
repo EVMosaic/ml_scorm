@@ -216,6 +216,9 @@ ml_scorm.Score = class Score {
 
 // DONE consider rewriting getters to not pull from LMS if value present
 // Above  was handled in TrackedObjectives
+
+// NOTE: CONSTRUCTOR NOW DOES NOT AUTOMATICALLY SAVE TO LMS YOU MUST NOW CALL scorm.save()
+// SOMEWHERE AFTER INITIALIZING AN OBJECTIVE. THIS CAN BE DONE WITH objectives.finalizeObjectives();
 ml_scorm.Objective = class Objective {
   // Creates a new Objective object and adds it to LMS
   // Index is non editable after creation.
@@ -230,9 +233,10 @@ ml_scorm.Objective = class Objective {
     this._score = new ml_scorm.Score();
     this.group = group;
     ml_scorm.DEBUG.INFO('creating new objective: ' + this._id);
-    ml_scorm.setValue(`cmi.objectives.${this.index}.id`, this._id);
-    ml_scorm.setValue(`cmi.objectives.${this.index}.score.min`, this._score.min);
-    ml_scorm.setValue(`cmi.objectives.${this.index}.score.max`, this._score.max);
+    ml_scorm.setValueDeferred(`cmi.objectives.${this.index}.id`, this._id);
+    ml_scorm.setValueDeferred(`cmi.objectives.${this.index}.score.min`, this._score.min);
+    ml_scorm.setValueDeferred(`cmi.objectives.${this.index}.score.max`, this._score.max);
+    ml_scorm.setValueDeferred(`cmi.objectives.${this.index}.id`, ml_scorm.STATUS.NOT_ATTEMPTED);
   }
 
   // Convenience function for completing an objective
@@ -296,6 +300,7 @@ ml_scorm.Objective = class Objective {
     this._score.min = min;
     ml_scorm.setValue(`cmi.objectives.${this.index}.score.min`, min);
   }
+
   // returns min score
   get minScore() {
     return this._score.min;
@@ -336,6 +341,11 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
     return newObjective;
   }
 
+  // Call after you are done adding objectives. This will batch process all objectives with LMS
+  finalizeObjectives() {
+    scorm.save();
+  }
+
   // If objectives are present repopulates this._objectives with data from LMS
   restoreObjectives() {
     let count = ml_scorm.getValue('cmi.objectives._count');
@@ -360,9 +370,9 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
       newObjective._status = status;
 
       this._objectives[id] = newObjective;
-
-      newObjective.save();
     }
+
+    this.finalizeObjectives();
   }
 
   // Returns number of currently tracked objectives
