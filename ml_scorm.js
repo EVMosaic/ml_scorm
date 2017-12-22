@@ -333,10 +333,12 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
   }
 
   // Adds new objective to both the internal tracking and on the LMS
-  addObjective(objectiveId, group = "default") {
+  // NOTE: does not save objectives now, you must call finalizeObjectives to sync with LMS
+  addObjective(objectiveId, group = "default", maxScore=100) {
     let index = ml_scorm.getValue('cmi.objectives._count');
     let id = objectiveId + '|' + group;
     let newObjective = new ml_scorm.Objective(index, id, group);
+    newObjective.maxScore = maxScore;
     this._objectives[objectiveId] = newObjective;
     return newObjective;
   }
