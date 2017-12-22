@@ -415,7 +415,23 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
 
   }
 
-  //NOTE this is not being used and uses outdated syntax. Needs work or depreciation
+  // NOTE: This is a hack to gaurentee completion of objectives and scoring
+  // Scores SCO at maxScore, sets all objectives to complete and max score
+  completeAllObjectives(group = "default") {
+    // Also set SCOScore to max
+    console.log("Setting SCO Score to max");
+    ml_scorm.scoreSCO(ml_scorm.maxScore);
+
+    let objectives = Object.values(this._objectives);
+    for (let i = 0; i < objectives.length; i++) {
+      if (group === "default" || group === objectives[i].group) {
+        objectives[i].score = objectives[i].maxScore;
+        objectives[i].complete();
+      }
+    }
+  }
+
+  // NOTE this is not being used and uses outdated syntax. Needs work or depreciation
   // Convienence function to add a list of objectives all at once
   // Takes in a list of IDs and creates a new objective for each
   // Will only add list if LMS does not contain any objectives at
