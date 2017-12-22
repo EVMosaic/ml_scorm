@@ -236,7 +236,7 @@ ml_scorm.Objective = class Objective {
     ml_scorm.setValueDeferred(`cmi.objectives.${this.index}.id`, this._id);
     ml_scorm.setValueDeferred(`cmi.objectives.${this.index}.score.min`, this._score.min);
     ml_scorm.setValueDeferred(`cmi.objectives.${this.index}.score.max`, this._score.max);
-    ml_scorm.setValueDeferred(`cmi.objectives.${this.index}.id`, ml_scorm.STATUS.NOT_ATTEMPTED);
+    ml_scorm.setValueDeferred(`cmi.objectives.${this.index}.status`, ml_scorm.STATUS.NOT_ATTEMPTED);
   }
 
   // Convenience function for completing an objective
