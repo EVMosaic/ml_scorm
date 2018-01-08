@@ -384,8 +384,21 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
 
   // Retrieves named objective from internal _objectives dictionary
   getObjective(id) {
-    return this._objectives[id];
+    if (ml_scorm.lmsConnected) {
+      return this._objectives[id];
+    } else {
+      ml_scorm.DEBUG.WARN('LMS NOT CONNECTED RETURNING DUMMY OBJECT INSTEAD OF ' + id);
+      let dummy = {};
+      dummy.complete = function() {
+        ml_scorm.DEBUG.WARN('This is a dummy object. Objective not marked complete.');
+      }
+      dummy.save = function() {
+        ml_scorm.DEBUG.WARN('This is a dummy object. Objective not saved.');
+      }
+      return dummy;
+    }
   }
+
 
   // Sums all existing scores for tracked objectives.
   // Useful for when the total score is a combined total of all sub objectives.
