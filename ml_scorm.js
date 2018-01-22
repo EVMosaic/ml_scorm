@@ -368,6 +368,9 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
       newObjective._score.raw = scoreRaw;
       newObjective._score.min = scoreMin;
       newObjective._score.max = scoreMax;
+      ml_scorm.setValueDeferred(`cmi.objectives.${i}.score.raw`, scoreRaw);
+      ml_scorm.setValueDeferred(`cmi.objectives.${i}.score.min`, scoreMin);
+      ml_scorm.setValueDeferred(`cmi.objectives.${i}.score.max`, scoreMax);
 
       newObjective._status = status;
 
