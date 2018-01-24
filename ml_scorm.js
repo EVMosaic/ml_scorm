@@ -439,11 +439,6 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
     this.finalizeObjectives();
   }
 
-  // Returns number of currently tracked objectives
-  get length() {
-    return Object.keys(this._objectives).length;
-  }
-
   // Retrieves named objective from internal _objectives dictionary
   getObjective(id) {
     if (ml_scorm.lmsConnected) {
@@ -506,7 +501,11 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
     }
   }
 
+  // Returns number of currently tracked objectives
+  get length() {
+    return Object.keys(this._objectives).length;
   }
+
 }
 
 // Interaction object for tracking student interactions
