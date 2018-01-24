@@ -141,6 +141,46 @@ ml_scorm.setMinSCOScore = function(score) {
   ml_scorm.setValue('cmi.core.score.min', score);
 }
 
+// Score object for the entire SCO. Previous methods are depreciated but around for
+// compatability for the moment
+ml_scorm._score = new Score();
+
+Object.defineProperty(ml_scorm,
+                      'score',
+                      {
+                        get: function() {
+                          return this._score.raw;
+                        },
+                        set: function(newData) {
+                          ml_scorm.setValue('cmi.core.score.raw', newData)
+                          this._score.raw = newData;
+                        }
+                      });
+
+Object.defineProperty(ml_scorm,
+                      'minScore',
+                      {
+                        get: function() {
+                          return this._score.min;
+                        },
+                        set: function(newData) {
+                          ml_scorm.setValue('cmi.core.score.min', newData)
+                          this._score.min = newData;
+                        }
+                      });
+
+Object.defineProperty(ml_scorm,
+                      'maxScore',
+                      {
+                        get: function() {
+                          return this._score.max;
+                        },
+                        set: function(newData) {
+                          ml_scorm.setValue('cmi.core.score.max', newData)
+                          this._score.max = newData;
+                        }
+                      });
+
 // Convienience wrapper for setting SCORM variables. Auto saves on call.
 // NOTE if setting multiple values at once use scorm.set() directly and
 // save after setting the final value to avoid slow communication with LMS
