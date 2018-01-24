@@ -413,7 +413,10 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
       let idGroup = ml_scorm.getValue(`cmi.objectives.${i}.id`);
       let scoreRaw = parseInt(ml_scorm.getValue(`cmi.objectives.${i}.score.raw`)) || 0;
       let scoreMin = parseInt(ml_scorm.getValue(`cmi.objectives.${i}.score.min`)) || 0;
-      let scoreMax = parseInt(ml_scorm.getValue(`cmi.objectives.${i}.score.max`)) || 100; //NOTE if max score is set to 0 this will be overwritten to 100 on reload. //TODO fix this
+      let scoreMax = parseInt(ml_scorm.getValue(`cmi.objectives.${i}.score.max`));
+      // This snippet allows for zero to be set as a maximum score and not reset to 100 on reload
+      scoreMax = isNaN(scoreMax) ? 100 : scoreMax;
+
       let status = ml_scorm.getValue(`cmi.objectives.${i}.status`);
       let id = idGroup.split('|')[0]
       let group = idGroup.split('|')[1];
