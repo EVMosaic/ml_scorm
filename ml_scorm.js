@@ -105,7 +105,6 @@ Object.defineProperty(ml_scorm,
 ml_scorm.initSCO = function() {
   ml_scorm.lmsConnected = scorm.init();
   ml_scorm._data = this.getValue('cmi.suspend_data');
-  console.log('ml_scorm._data');
 }
 
 // Called once a SCO is unloaded. Neccesary to finalize interaction
