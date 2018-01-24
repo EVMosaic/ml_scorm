@@ -381,6 +381,12 @@ ml_scorm.Objective = class Objective {
   }
 }
 
+
+
+// Previous implementations had this as an external object declared in scorm_parent
+// It makes more sense to create this internally
+ml_scorm.objectives = new TrackedObjectives();
+
 // Container class to hold all objectives for a SCO.
 // Use this to create all new Objectives and retrieve them to alter properties
 // Automatically populates with previous values stored in the LMS
