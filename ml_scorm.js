@@ -446,20 +446,6 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
     }
   }
 
-  // NOTE this is not being used and uses outdated syntax. Needs work or depreciation
-  // Convienence function to add a list of objectives all at once
-  // Takes in a list of IDs and creates a new objective for each
-  // Will only add list if LMS does not contain any objectives at
-  // the time it is run. Can be expanded at some point to include
-  // more involved checking and adding of missing or updated objectives.
-  initializeList(listOfIds) {
-    let currentObjectivesCount = parseInt(ml_scorm.getValue('cmi.object._count'));
-    if (currentObjectivesCount) {
-      ml_scorm.DEBUG.log('objectives already initialized');
-      return;
-    } else {
-      listOfIds.forEach(obj => this.addObjective(obj));
-    }
   }
 }
 
