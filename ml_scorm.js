@@ -363,16 +363,15 @@ ml_scorm.Objective = class Objective {
     return this._score.min;
   }
 
-
   // Changes will be updated to the LMS as they are made to the
   // object. This method is probably redundant, but provides a way
   // to ensure that all values are saved on the object.
   save() {
-    scorm.set(`cmi.objectives.${this.index}.id`, this._id);
-    scorm.set(`cmi.objectives.${this.index}.score.raw`, this._score.raw);
-    scorm.set(`cmi.objectives.${this.index}.score.min`, this._score.min);
-    scorm.set(`cmi.objectives.${this.index}.score.max`, this._score.max);
-    scorm.set(`cmi.objectives.${this.index}.status`, this._status);
+    ml_scorm.setValueDeferred(`cmi.objectives.${this.index}.id`, this._id);
+    ml_scorm.setValueDeferred(`cmi.objectives.${this.index}.score.raw`, this._score.raw);
+    ml_scorm.setValueDeferred(`cmi.objectives.${this.index}.score.min`, this._score.min);
+    ml_scorm.setValueDeferred(`cmi.objectives.${this.index}.score.max`, this._score.max);
+    ml_scorm.setValueDeferred(`cmi.objectives.${this.index}.status`, this._status);
     scorm.save();
   }
 }
