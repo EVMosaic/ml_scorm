@@ -252,7 +252,13 @@ ml_scorm.Score = class Score {
     this.min = min;
     this.max = max;
   }
+
+  // Pretty print values in object.
+  toString() {
+    return `raw:${this.raw} min:${this.min} max:${this.max}`;
+  }
 }
+
 
 
 // Objective Object for keeping track of objectives within a SCO.
