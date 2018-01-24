@@ -506,6 +506,15 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
     return Object.keys(this._objectives).length;
   }
 
+  // Debugging method to list a table of all objectives
+  debugObjectives() {
+    console.table(this._objectives);
+  }
+
+  // Debugging method to list a table of all scores from objectives
+  debugScores() {
+    console.table([...(Object.values(this._objectives))].map(o => o._score))
+  }
 }
 
 // Interaction object for tracking student interactions
