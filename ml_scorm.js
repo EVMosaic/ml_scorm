@@ -120,6 +120,16 @@ ml_scorm.completeSCO = function() {
   ml_scorm.setValue('cmi.core.lesson_status', ml_scorm.STATUS.COMPLETED);
 }
 
+// Called when a SCO is evaluated as having a passing score to mark in LMS as passed
+ml_scorm.passSCO = function() {
+  ml_scorm.setValue('cmi.core.lesson_status', ml_scorm.STATUS.PASSED);
+}
+
+// Called when a SCO is evaluated as having a failing score to mark in LMS as failed
+ml_scorm.failSCO = function() {
+  ml_scorm.setValue('cmi.core.lesson_status', ml_scorm.STATUS.FAILED);
+}
+
 // Called to update SCO status to a specific state
 ml_scorm.updateStatus = function(status) {
   ml_scorm.setValue('cmi.core.lesson_status', status);
