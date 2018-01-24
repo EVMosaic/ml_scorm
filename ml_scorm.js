@@ -135,18 +135,20 @@ ml_scorm.updateStatus = function(status) {
   ml_scorm.setValue('cmi.core.lesson_status', status);
 }
 
-// Called to score a SCO. Assumes min value of zero, max of 100, and normallized
-// score between the two.
+// THIS METHOD IS DEPRECIATED, DO NOT USE GOING FORWARD
+// Called to score a SCO. This is a score for the entire SCO as a whole.
+// Assumes min value of zero, max of 100, and normallized score between the two.
 ml_scorm.scoreSCO = function(score) {
   ml_scorm.setValue('cmi.core.score.raw', score);
 }
 
+// THIS METHOD IS DEPRECIATED, DO NOT USE GOING FORWARD
 // Set max SCO score. This feels wrong. Should probably give ml_scorm a Score Object
 // and add accessors. Same with above. (also it just looks ugly as a function name)
 ml_scorm.setMaxSCOScore = function(score) {
   ml_scorm.setValue('cmi.core.score.max', score);
 }
-
+// THIS METHOD IS DEPRECIATED, DO NOT USE GOING FORWARD
 ml_scorm.setMinSCOScore = function(score) {
   ml_scorm.setValue('cmi.core.score.min', score);
 }
