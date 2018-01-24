@@ -7,8 +7,8 @@
 var scorm = pipwerks.SCORM;
 
 var ml_scorm = {}
-  // Used to determine if communicatoin is happening with the LMS
-  // Not sure if this is neccesarry, pipwerks may handle this internally
+// Used to determine if communication is happening with the LMS
+// Not sure if this is neccesarry, pipwerks may handle this internally
 ml_scorm.lmsConnected = false;
 
 // Global constant object for legal status types;
@@ -44,7 +44,7 @@ ml_scorm.INTERACTION = {
 }
 Object.freeze(ml_scorm.INTERACTION);
 
-// Global contsat object for legal interaction results
+// Global constant object for legal interaction results
 // Additional legal response is a floating point number
 ml_scorm.RESULT = {
   CORRECT: "correct",
@@ -86,6 +86,9 @@ ml_scorm.DEBUG = {
 }
 Object.freeze(ml_scorm.DEBUG);
 
+// suspend_data from LMS
+// Can be used to store data between sessions
+// limited to 4,096 characters
 ml_scorm._data = '';
 
 Object.defineProperty(ml_scorm,
@@ -194,9 +197,8 @@ Object.defineProperty(ml_scorm,
                       });
 
 // Convienience wrapper for setting SCORM variables. Auto saves on call.
-// NOTE if setting multiple values at once use scorm.set() directly and
+// NOTE if setting multiple values at once use setValueDeferred() and
 // save after setting the final value to avoid slow communication with LMS
-// TODO actually might ignore the previous note and have a flag to enable saving not sure if should default to true or false though. False for speed. True for convienence.
 ml_scorm.setValue = function(param, value) {
   if (ml_scorm.lmsConnected) {
     ml_scorm.DEBUG.LOG(`setting ${param} to ${value}`);
@@ -207,6 +209,12 @@ ml_scorm.setValue = function(param, value) {
     ml_scorm.DEBUG.WARN('LMS NOT CONNECTED');
   }
 }
+
+// Sets a value on the LMS WITHOUT saving it. Use this when batch setting values
+// There is a noticable speed difference when setting large numbers of values.
+// You will need to manually call scorm.save() to finalize the interaction or
+// call another method that does so (setValue or Objectives.finalizeObjectives)
+// to ensure there is no data loss
 
 ml_scorm.setValueDeferred = function(param, value) {
   if (ml_scorm.lmsConnected) {
@@ -237,7 +245,7 @@ ml_scorm.getBookmark = function() {
   return ml_scorm.getValue('cmi.core.lesson_location');
 }
 
-// Sets bookmark of location in course
+// Sets bookmark of location in course. This is limited to 255 characters;
 ml_scorm.setBookmark = function(location) {
   ml_scorm.setValue('cmi.core.lesson_location', location);
 }
@@ -270,9 +278,6 @@ ml_scorm.Score = class Score {
 // Added a group object that allows scoring different groups of Objectives at a time
 // currently group gets added to the id in TrackedObjective so it can be added back
 // when being reloaded.
-
-// DONE consider rewriting getters to not pull from LMS if value present
-// Above  was handled in TrackedObjectives
 
 // NOTE: CONSTRUCTOR NOW DOES NOT AUTOMATICALLY SAVE TO LMS YOU MUST NOW CALL scorm.save()
 // SOMEWHERE AFTER INITIALIZING AN OBJECTIVE. THIS CAN BE DONE WITH objectives.finalizeObjectives();
@@ -377,14 +382,12 @@ ml_scorm.Objective = class Objective {
 }
 
 // Container class to hold all objectives for a SCO.
-// Contains methods for adding new objectives one at a time or in bulk
-// Should this be a class?? Can we make this just an object? --good question...
-// DONE populate from LMS if values present -- [x] Did this :D
-// NOTE changing objectives from an array to an object. Need to update docs to match
+// Use this to create all new Objectives and retrieve them to alter properties
+// Automatically populates with previous values stored in the LMS
 ml_scorm.TrackedObjectives = class TrackedObjectives {
   constructor() {
     this._objectives = {};
-    console.log('tracked objectives instantiated. checking for objectives to restore');
+    console.log('TrackedObjectives instantiated. checking for objectives to restore...');
     this.restoreObjectives();
   }
 
@@ -400,6 +403,10 @@ ml_scorm.TrackedObjectives = class TrackedObjectives {
   }
 
   // Call after you are done adding objectives. This will batch process all objectives with LMS
+  // NOTE: although this is contained in the objectives class this saves the entire SCO
+  // this is not needed if another method is called after that uses scorm.save but
+  // in favor of erring on the side of caution it was added explicitly here in order
+  // to use defered value setting as a performance boost
   finalizeObjectives() {
     scorm.save();
   }
@@ -544,6 +551,7 @@ ml_scorm.Interaction = class Interaction {
     this._startTime = ""
     // startTime and finishTime should be stored internally as Date objects
     // NOTE should probably change the default values to reflect that fact
+
     this._finishTime = "";
     // this is inconsistently documented as both the time interaction
     // was first shown to student, and time interaction was completed
@@ -745,7 +753,6 @@ ml_scorm.Interaction = class Interaction {
   get result() {
     return this._result;
   }
-
 
   // Initializes interaction object and logs state to LMS.
   // Some values ie startTime, finishTime need to be updated at later points
